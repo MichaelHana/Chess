@@ -3,7 +3,7 @@
 #include <iostream>
 #include "viewer.h"
 
-class text: public viewer {
+class Text: public Viewer {
   std::ostream &out;
   public:
   update(char[][]board) override;
