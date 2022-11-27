@@ -6,6 +6,6 @@
 class Text: public Viewer {
   std::ostream &out;
   public:
-  update(char[][]board) override;
+  void update(char[][]board) override;
 };
 #endif
