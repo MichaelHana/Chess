@@ -12,59 +12,48 @@ void Game::updateViewers() {
 }
 void Game::play() {
         std::string command;
-                        while (std::cin >> command)
-                                //delete current board, players, viewers(??)?
-                                switch(command) {
-                                        case "game":
-                                                std::string player1;
-                                                std::string player2;
-                                                std::cin >> 
-                                                board = new Board(start);
-                                        /*for (int i=0; i<players;++i) {
-
-                                        }*/ // should maybe see about changing implementation to allow for more players??
-                                        switch(player1) {
-                                                case "human":
-                                                        Human *human = new Human();
-                                                players.emplace_back(human);
-                                                case "computer1":
-                                                        Computer1 *computer = new Computer1(); // what arguments??
-                                                        players.emplace_back(computer);
-                                                case "computer2":
-                                                        Computer2 *computer = new Computer2(); // what arguments??
-
-                                                case "computer3":
-
-                                                case "computer4":
-
-                                                default:
-                                                        //throw error to be caught in main?             
-                                        }
-                                        switch(black-player) {
-                                                case "human":
-
-                                                case "computer1":
-
-                                                case "computer2":
-
-                                                case "computer3":
-
-                                                case "computer4":
-
-                                                default:
-                                                        //throw error to be caught in main? delete necessary memory to avoid leaks?
-                                        }
-                                        Text *text = new Text(); //parameters?? - make sure to send board layout, dimensions
-                                        viewers.emplace_back(text);
-                                        Graphics *graphic = new Graphic();//
-                                        viewers.emplace_back(graphic);
-                                
-                        case "resign":
-                                if (turn%2) {
-                                        //return other player win
-                                } else {
-                                        //return other player win
-                                }
+	while (std::cin >> command) {
+		switch(command) {
+			case "game":
+				//delete current board, players, viewers(??)? will this have - should actually just do this when game ends so players can't keep making moves on an already finished game
+				board = new Board(start);
+				for (int i=0; i<numplayers; ++i) {
+					std::string player;
+					std::cin >> player;
+					switch(player1) {
+						case "human":
+							Human *plyr = new Human();
+							break;
+						case "computer1":
+							Computer1 *plyr = new Computer1(); // what arguments??
+							break;
+						case "computer2":
+							Computer2 *plyr = new Computer2(); // what arguments??
+							break;
+						case "computer3":
+							Computer3 *plyr = new Computer3(); // what arguments??
+							break;
+						case "computer4":
+							Computer4 *plyr = new Computer4(); // what arguments??
+							break;
+						default:
+							std::cout << invalid player: << player << std::endl;
+					}
+					players.emplace_back(plyr);
+				}
+				Text *text = new Text(); //parameters?? - make sure to send board layout, dimensions
+				viewers.emplace_back(text);
+				Graphics *graphic = new Graphic(); //parameters??
+				viewers.emplace_back(graphic);
+				break;
+                        case "resign": //this would need to change if >2 players- basically just check turn mod numplayers
+                                curplayer = turn%numplayers;
+				for (int i=0; i<numplayers) {
+					if (i!=curplayer) {
+						wins[i]++;
+					}
+				}
+				// effectively ends game - should delete all associated memory (board + players, maybe viewers?)
                                 break;
                         case "move":
                                 if (turn%2) {
