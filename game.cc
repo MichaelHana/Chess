@@ -12,6 +12,9 @@ void Game::updateViewers() {
         }
 }
 void Game::play() {
+	Text *text = new Text(std::cout); // This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
+	Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
+	
         std::string command;
 	while (std::cin >> command) {
 		switch(command) {
@@ -44,12 +47,14 @@ void Game::play() {
 					}
 					players.emplace_back(plyr);
 				}
-				Text *text = new Text(std::cout); // This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
 				viewers.emplace_back(text);
-				Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
 				viewers.emplace_back(graphic);
 				break;
                         case "resign": //this would need to change if >2 players- basically just check turn mod numplayers
+				if (!board) {
+					std::cout << "The game has ended. Please start a new game before resigning." << std::endl;
+					break;
+				}
                                 curplayer = turn%numplayers;
 				for (int i=0; i<numplayers) {
 					if (i!=curplayer) {
@@ -62,9 +67,13 @@ void Game::play() {
 				for (int i=0; i<numplayers; ++i) {
 					delete vector<Player *>::back(players);
 					players.pop_back();
-				}
+				} //?????
                                 break;
                         case "move":
+				if (!board) {
+					std::cout << "The game has ended. Please start a new game before making moves." << std::endl;
+					break;
+				}
 				curplayer = turn%numplayers;
                                 //vector<Move *> validmoves = board.listmoves(); //ensure its not empty??
 				std::pair<std::pair<int, int>, std::pair<int, int>> playermove = players[curplayer]->getMove(board.listmoves());
@@ -76,6 +85,10 @@ void Game::play() {
                                 checkEnd();
                                 break;
                         case "setup":
+				if (!board) {
+					std::cout << "The game has ended. Please start a new game before setting up." << std::endl;
+					break;
+				}
                                 setup();
                                 break;
                         default:
@@ -109,7 +122,8 @@ Game::~Game {
 		delete vector<Viewer *>::back(viewers);
 		viewers.pop_back();
 	} //?????
-	is there any case here where I should also delete 
+	//is there any case here where I should also delete board and players??
+}
 		
 		
 
