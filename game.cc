@@ -86,7 +86,7 @@ void setup() {
                 case "-":
 
                 case "=":
-			//should maybe change order of players in players until the one we want is first?
+			//should maybe change order of players in players until the one we want is first? (can get front element (vector< >::front(players), emplace on back and then use erase??)
                 case "done":
                         //check if board contains exactly one white king and one black king, no pawns are on the first or last row of the board, and neither king is in check - O.W. shouldn't leave setup mode, should output message to user
                         //if the conditions are met, should return to game setup, having made changes to board
@@ -95,9 +95,16 @@ void setup() {
         }
 }
 int checkEnd() {
-        
+        // if end, update wins, and delete board, players
 }
-
+Game::~Game {
+	while (viewers[0]) {
+		delete vector<Viewer *>::back(viewers);
+		viewers.pop_back();
+	} //?????
+	is there any case here where I should also delete 
+		
+		
 
             
                 
