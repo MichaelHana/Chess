@@ -4,5 +4,5 @@
 
 int main() {
 	Game *game = new Game();
-        game.play();
+	game.play();
 }
