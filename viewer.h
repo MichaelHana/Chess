@@ -8,6 +8,7 @@ class Viewer {
   public:
         // must either ensure will always be getting 2d char array of proper size or put in protections
         virtual void update(char board[rows][cols])=0;
+        // should add in a constructor for the case where we want to change the board dimensions
         virtual ~Viewer();
 };
 #endif
