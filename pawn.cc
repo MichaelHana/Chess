@@ -35,7 +35,7 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 		} else { // invalid move
 			return false;
 		}
-	} else if (color == 1) {
+	} else if (color == 1) { // black
 		if (start.first - end.first == 0) { // vertical move: not a capture
 			if (end.second - start.second < 2 || end.second - start.second > 1) { // too far or wrong direction
 				return false;
