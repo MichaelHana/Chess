@@ -1,16 +1,13 @@
-#ifndef HUMAN_H
-#define HUMAN_H
-#include <iostream>
+#ifndef LEVEL3_H
+#define LEVEL3_H
 #include <vector>
 #include <utility>
-#include "player.h"
+#include "computer.h"
 
 struct Move;
 
-class Human : Player {
-	std::istream in;
-	public: 
-		Player(std::istream in);
+class Level3: Computer {
+	public:
 		std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves);
 };
 

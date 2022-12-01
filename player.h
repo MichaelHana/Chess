@@ -1,10 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include <utility>
-#include "move.h"
+#include <vector>
+
+struct Move;
 
 class Player {
-	virtual std::pair<std::pair<int, int>, std::pair<int, int>> getMove(vector<Move>) = 0;
+	virtual std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves) = 0;
 };
 
 #endif
