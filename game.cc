@@ -44,7 +44,7 @@ void Game::play() {
 					}
 					players.emplace_back(plyr);
 				}
-				Text *text = new Text(); //parameters?? - make sure to send board layout, dimensions
+				Text *text = new Text(std::cout); // This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
 				viewers.emplace_back(text);
 				Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
 				viewers.emplace_back(graphic);
