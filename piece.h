@@ -3,7 +3,6 @@
 #include <utility>
 
 class Board;
-class Move;
 
 class Piece {
 	int color;
@@ -12,7 +11,7 @@ public:
 	Piece(int color);
 	int getColor();
 	void setMoved();
-	virtual Move checkMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) = 0;
+	virtual bool validMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) = 0;
 };
 
 #endif

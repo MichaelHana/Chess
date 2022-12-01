@@ -11,17 +11,17 @@ Move Bishop::checkMove(Board* board, std::pair<int, int> start, std::pair<int, i
 
 	// check move distance
 	if (abs(start.first - end.first) != abs(start.second - end.second) || start == end) {
-		return nullptr;
+		return false;
 	}
 	// check if blocked by piece before end
 	for (int x = start.first, y = start.second; x != end.first || y != end.second; x += (end.first - start.first) / abs(end.first - start.first), y += (end.second - start.second) / abs(end.second - start.second)) {
-		if (board->getPiece(std::make_pair(x, y)) != nullptr) {
-			return nullptr;
+		if (board->getPiece(std::make_pair(x, y)) != false) {
+			return false;
 		}
 	}
 	// check if end blocked by friendly piece
-	if (board->getPiece(end) != nullptr && board->getPiece(end)->getColor() == color) {
-		return nullptr;
+	if (board->getPiece(end) != false && board->getPiece(end)->getColor() == color) {
+		return false;
 	}
 
 	return Move(start, end, board->getPiece(end));
