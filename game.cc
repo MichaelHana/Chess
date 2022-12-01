@@ -46,7 +46,7 @@ void Game::play() {
 				}
 				Text *text = new Text(); //parameters?? - make sure to send board layout, dimensions
 				viewers.emplace_back(text);
-				Graphics *graphic = new Graphic(); //parameters??
+				Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
 				viewers.emplace_back(graphic);
 				break;
                         case "resign": //this would need to change if >2 players- basically just check turn mod numplayers
