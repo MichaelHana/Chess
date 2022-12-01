@@ -5,9 +5,9 @@
 #include <iostream>
 
 void Game::updateViewers() {
-        char cur[rows][cols] = board.getState();
+        char cur[rows][cols] = board->getState();
         for (Viewer *viewer: viewers) {
-                viewer.update(cur);
+                viewer->update(cur);
         }
 }
 void Game::play() {
@@ -66,9 +66,6 @@ void Game::play() {
                                         //get player move - what is the type I should take it as??
                                         // update board with move - checkmove??
                                         //call updateviewers with argument from board.getstate()
-                                } else {
-                                        //do same for other player
-                                }
                                 checkEnd();
                                 break;
                         case "setup":
