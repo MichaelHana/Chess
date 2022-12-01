@@ -11,8 +11,7 @@ void updateViewers() {
         }
 }
 void play(std::string white-player, std::string black-player) {
-        board = new Board(); //parameters??
-        // should add in something to make a 2d char array representation to pass to viewer
+        board = new Board(start);
         /*for (int i=0; i<players;++i) {
                 
         }*/ // should maybe see about changing implementation to allow for more players??
@@ -48,8 +47,10 @@ void play(std::string white-player, std::string black-player) {
                         //throw error to be caught in main? delete necessary memory to avoid leaks?
         }
         Text *text = new Text(); //parameters?? - make sure to send board layout, dimensions
+        viewers.emplace_back(text);
         Graphics *graphic = new Graphic();//
-        //add viewers to a list somewhere?
+        viewers.emplace_back(graphic);
+        
         std::string command;
         while (std::cin >> command) {
                 switch(command) {
