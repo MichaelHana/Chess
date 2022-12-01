@@ -15,6 +15,7 @@ void Game::play() {
 	while (std::cin >> command) {
 		switch(command) {
 			case "game":
+				//reset turn to 0
 				//delete current board, players, viewers(??)? will this have - should actually just do this when game ends so players can't keep making moves on an already finished game
 				board = new Board(start);
 				for (int i=0; i<numplayers; ++i) {
@@ -25,19 +26,20 @@ void Game::play() {
 							Human *plyr = new Human(std::cin);
 							break;
 						case "computer1":
-							Computer1 *plyr = new Computer1(); // what arguments??
+							Level1 *plyr = new Level1(); // what arguments??
 							break;
 						case "computer2":
-							Computer2 *plyr = new Computer2(); // what arguments??
+							Level2 *plyr = new Level2(); // what arguments??
 							break;
 						case "computer3":
-							Computer3 *plyr = new Computer3(); // what arguments??
+							Level3 *plyr = new Level3(); // what arguments??
 							break;
 						case "computer4":
-							Computer4 *plyr = new Computer4(); // what arguments??
+							Leve4 *plyr = new Level4(); // what arguments??
 							break;
 						default:
 							std::cout << invalid player: << player << std::endl;
+							// should this break and reset everything??
 					}
 					players.emplace_back(plyr);
 				}
@@ -56,8 +58,9 @@ void Game::play() {
 				// effectively ends game - should delete all associated memory (board + players, maybe viewers?)
                                 break;
                         case "move":
-                                if (turn%2) {
-                                        board.listmoves(); // what type do I put this in?
+				curplayer = turn%numplayers;
+                                //vector<Move *> validmoves = board.listmoves(); //ensure its not empty??
+				players[curplayer]->getMove(board.listmoves());
                                         //get player move - what is the type I should take it as??
                                         // update board with move - checkmove??
                                         //call updateviewers with argument from board.getstate()
@@ -84,7 +87,7 @@ void setup() {
                 case "-":
 
                 case "=":
-
+			//should maybe change order of players in players until the one we want is first?
                 case "done":
                         //check if board contains exactly one white king and one black king, no pawns are on the first or last row of the board, and neither king is in check - O.W. shouldn't leave setup mode, should output message to user
                         //if the conditions are met, should return to game setup, having made changes to board
