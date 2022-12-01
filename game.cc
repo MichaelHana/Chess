@@ -22,7 +22,7 @@ void Game::play() {
 					std::cin >> player;
 					switch(player1) {
 						case "human":
-							Human *plyr = new Human();
+							Human *plyr = new Human(std::cin);
 							break;
 						case "computer1":
 							Computer1 *plyr = new Computer1(); // what arguments??
