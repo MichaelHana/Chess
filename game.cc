@@ -115,7 +115,10 @@ void setup() {
         }
 }
 int checkEnd() {
-        // if end, update wins, and delete board, players
+	for (Player *player: players) {
+		int state = board->checkmate(player->colour);
+		// if end, update wins, and delete board, players
+	}
 }
 Game::~Game {
 	while (viewers[0]) {
