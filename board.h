@@ -8,11 +8,13 @@ class Piece;
 
 class Board {
 	int row, col;
-	Piece** pieces;
+	Piece*** pieces;
+	char** board;
 	public:
-		Board(row, col, Piece** pieces);
+		Board(row, col, char** board);
 		bool checkMove(Move m);
-		std::vector<std::vector<char>> getState();
+		char** getState();
+		int checkmate(int color);
 		std::vector<Move> listMoves(int colour);
 };
 
