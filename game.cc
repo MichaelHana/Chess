@@ -3,6 +3,7 @@
 #include "computer.h"
 #include <string>
 #include <iostream>
+#include <vector>
 
 void Game::updateViewers() {
         char cur[rows][cols] = board->getState();
@@ -56,6 +57,12 @@ void Game::play() {
 					}
 				}
 				// effectively ends game - should delete all associated memory (board + players, maybe viewers?)
+				delete board;
+				board == nullptr;
+				for (int i=0; i<numplayers; ++i) {
+					delete vector<Player *>::back(players);
+					players.pop_back();
+				}
                                 break;
                         case "move":
 				curplayer = turn%numplayers;
