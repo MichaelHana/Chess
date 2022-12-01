@@ -11,6 +11,7 @@ void Game::updateViewers() {
                 viewer->update(cur);
         }
 }
+
 void Game::play() {
 	Text *text = new Text(std::cout); // This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
 	Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
