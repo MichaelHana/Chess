@@ -60,7 +60,9 @@ void Game::play() {
                         case "move":
 				curplayer = turn%numplayers;
                                 //vector<Move *> validmoves = board.listmoves(); //ensure its not empty??
-				players[curplayer]->getMove(board.listmoves());
+				std::pair<std::pair<int, int>, std::pair<int, int>> playermove = players[curplayer]->getMove(board.listmoves());
+				board->move(playermove);
+				updateViewers();
                                         //get player move - what is the type I should take it as??
                                         // update board with move - checkmove??
                                         //call updateviewers with argument from board.getstate()
