@@ -5,6 +5,7 @@
 #include "board.h"
 
 class Game {
+	int turn = 0;
 	static const int numplayers = 2;
 	static const int rows = 8;
 	static const int cols = 8;
@@ -14,8 +15,8 @@ class Game {
 	std::vector<Player *> players; //?
 	std::vector<Viewer *> viewers; //?
 public:
-	void updateViewers();
 	void play();
+	void updateViewers();
 	void setup();
 	int checkEnd();
 };
