@@ -136,7 +136,7 @@ void setup()
 		std::string colour;
 		std::cin >> colour;
 		// !!!!!!!!!!!!!!!!!!!
-		// should switch around order of wins as well
+		// should switch around order of wins as well 
 		// should maybe change order of players in players until the one we want is first? (can get front element (vector< >::front(players), emplace on back and then use erase??)
 	case "done":
 		if (board.doneSetUp())
