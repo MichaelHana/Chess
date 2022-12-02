@@ -6,10 +6,11 @@
 #include "level3.h"
 // include "level4.h"
 #include "text.h"
-#include "graphics.h"
+//include "graphics.h"
 #include <string>
 #include <iostream>
-// include <vector>
+#include <vector>
+
 
 void Game::updateViewers()
 {
@@ -136,7 +137,7 @@ void setup()
 		std::string colour;
 		std::cin >> colour;
 		// !!!!!!!!!!!!!!!!!!!
-		// should switch around order of wins as well 
+		// should switch around order of wins as well
 		// should maybe change order of players in players until the one we want is first? (can get front element (vector< >::front(players), emplace on back and then use erase??)
 	case "done":
 		if (board.doneSetUp())
@@ -155,32 +156,42 @@ int checkEnd()
 {
 	bool end = false;
 	curplayer = turn % numplayers;
-	nextplayer = curplayer + 1;
-	if (nextplayer >= numplayers)
-	{
+	nextplayer = curplayer+1;
+	if (nextplayer >= numplayers) {
 		nextplayer -= numplayers;
 	}
-	if (!players[nextplayer]->getMove(board.listmoves()))
-	{ // what does it return if no moves??
-		end = true;
-		for (j=0; j< numplayers; ++j) {
-			wins[j] += 0.5;
-		}
-		// draw?? - add .5 to each player's score??? - is this a stalemate???
-	}
-	else
+
+	/*for (Player *player : players)
 	{
-		for (Player *player : players)
-		{
-			int state = board->checkmate(player->colour);
-			if (state ==)
-			{ // what are conditions for win/end??????? just checkmate???
-				end = true;
-				wins[curplayer]++; //curplayer shouldn't be in check since they can't move themselves into check
-				// win?? add to one player's score?????
-				//
+		int state = board->checkmate(player->colour);
+		if (state == 1) //checkmate
+		{ // what are conditions for win/end??????? just checkmate???
+			end = true;
+			wins[curplayer]++; //curplayer shouldn't be in check since they can't move themselves into check
+			// win?? add to one player's score?????
+			//
+		} else if (state == 2) { //stalemate
+			end = true;
+			for (j=0; j< numplayers; ++j) {
+				wins[j] += 0.5;
 			}
-			// if end, update wins, and delete board, players
+		}
+		// if end, update wins, and delete board, players
+	}*/
+	int state = board->checkmate(nextplayer->colour);
+	if (state == 1) // checkmate
+	{				// what are conditions for win/end??????? just checkmate???
+		end = true;
+		wins[curplayer]++; // curplayer shouldn't be in check since they can't move themselves into check
+						   // win?? add to one player's score?????
+						   //
+	}
+	else if (state == 2)
+	{ // stalemate
+		end = true;
+		for (j = 0; j < numplayers; ++j)
+		{
+			wins[j] += 0.5;
 		}
 	}
 	if (end)
