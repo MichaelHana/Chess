@@ -1,6 +1,12 @@
 #include "game.h"
 #include "human.h"
 #include "computer.h"
+#include "level1.h"
+#include "level2.h"
+#include "level3.h"
+//include "level4.h"
+#include "text.h"
+#include "graphics.h"
 #include <string>
 #include <iostream>
 #include <vector>
@@ -39,9 +45,9 @@ void Game::play() {
 						case "computer3":
 							Level3 *plyr = new Level3(); // what arguments??
 							break;
-						case "computer4":
-							Leve4 *plyr = new Level4(); // what arguments??
-							break;
+						/*case "computer4":
+							Level4 *plyr = new Level4(); // what arguments??
+							break;*/
 						default:
 							std::cout << invalid player: << player << std::endl;
 							// should this break and reset everything??
