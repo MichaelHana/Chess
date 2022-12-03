@@ -173,7 +173,7 @@ std::vector<Move> Board::listMoves(int color) {
 					std::pair<int, int> start = std::make_pair( j, i );
 					std::pair<int, int> end = std::make_pair( x, y );
 					if (pieces[j][i]->validMove(this, start, end) && pieces[j][i]->getColor() == color) {
-						bool is_capture, is_check, is_checkmate;
+						bool is_capture = false, is_check = false, is_checkmate = false;
 						if (pieces[end.first][end.second]) {
 							is_capture = true;
 						}
