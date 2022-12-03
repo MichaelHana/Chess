@@ -2,10 +2,10 @@
 #include <vector>
 #include "human.h"
 
-Human::Human(std::istream in) : in{ in } {}
+Human::Human(std::istream &in) : in{ in } {}
 
 std::pair<std::pair<int, int>, std::pair<int, int>> Human::getMove(std::vector<Move> moves) {
-	string start, end;
+	std::string start, end;
 	in >> start >> end;
 	
 	if (start.size() > 2) {
@@ -22,8 +22,8 @@ std::pair<std::pair<int, int>, std::pair<int, int>> Human::getMove(std::vector<M
 	end_x = end[0] - 'a';
 	end_y = end[1] - '0';
 
-	std::pair<int, int> start_move = make_pair{ start_x, start_y };
-	std::pair<int, int> end_move = make_pair{ end_x, end_y };
+	std::pair<int, int> start_move = std::make_pair( start_x, start_y );
+	std::pair<int, int> end_move = std::make_pair( end_x, end_y );
 
-	return make_pair{ start_move, end_move };
+	return std::make_pair( start_move, end_move );
 }

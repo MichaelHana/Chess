@@ -1,4 +1,5 @@
 #include <vector>
+#include <utility>
 #include "move.h"
 #include "board.h"
 #include "pawn.h"
@@ -11,10 +12,14 @@
 
 //Piece** might not be correct and might have to change how to initialize the board
 
-Board::Board(int row, int col, char** board) : row{ row }, col{ col }, board {board} {
-	this->board = new char[col][row];
-	pieces = new Player*[col][row];
+Board::Board(int row, int col, char** board) : row{ row }, col{ col }, board { board } {
+	this->board = new char*[col];
+	pieces = new Piece**[col];
+
 	for (int i = 0; i < row; ++i) {
+		this->board[i] = new char[row];
+		pieces[i] = new Piece * [row];
+
 		for (int j = 0; j < col; ++j) {
 			this->board[j][i] = board[j][i];
 			if (board[j][i] >= 'a' && board[j][i] <= 'z') {
@@ -36,6 +41,7 @@ Board::Board(int row, int col, char** board) : row{ row }, col{ col }, board {bo
 				else {
 					pieces[j][i] = new King{ 1 };
 				}
+			}
 			else {
 				if (board[j][i] == 'P') {
 					pieces[j][i] = new Pawn{ 0 }; // white
@@ -60,7 +66,6 @@ Board::Board(int row, int col, char** board) : row{ row }, col{ col }, board {bo
 	}
 }
 
-
 bool Board::checkMove(Move m) {
 	//rework this: pieces no longer return a type Move
 	if (pieces[m.start.first][m.start.second]->validMove(this, m.start, m.end)) {//check if piece can move there
@@ -74,26 +79,26 @@ bool Board::checkMove(Move m) {
 		pieces[m.start.first][m.start.second] = nullptr;
 
 		// revert move if king ends up in check
-		if (check(piece[m.start.first][m.start.end]->getColor())) {
-			piece[m.start.first][m.start.second] = piece[m.end.first][m.end.second];
-			piece[m.end.first][m.end.second] = captured_piece;
+		if (check(pieces[m.start.first][m.start.second]->getColor())) {
+			pieces[m.start.first][m.start.second] = pieces[m.end.first][m.end.second];
+			pieces[m.end.first][m.end.second] = captured_piece;
 			throw ("bad_move"); //might change
 		}
 	}
 }
 
-std::vector<std::vector<char>> getState() {
+char** Board::getState() {
 	return board;
 }
 
-bool check(int king_color) {
+bool Board::check(int king_color) {
 	//get king position
 	int king_x = 0;
 	int king_y = 0;
 	for (int y = 0; y < row; ++y) {
 		for (int x = 0; x < col; ++x) {
 			Piece* king = dynamic_cast<King*>(piece[x][y]);
-			if (king && piece[x][y]->getColor() == king_color) {//piece is a king and matches the color of the moving piece
+			if (king && pieces[x][y]->getColor() == king_color) {//piece is a king and matches the color of the moving piece
 				king_x = x;
 				king_y = y;
 				break;
@@ -105,9 +110,9 @@ bool check(int king_color) {
 
 	for (int y = 0; y < row; ++y) {
 		for (int x = 0; x < col; ++x) {
-			if (piece[x][y] && piece[x][y]->getColor() != piece[king_x][king_y]->getColor()) {//piece is valid and color is opposite of the king's color
+			if (pieces[x][y] && pieces[x][y]->getColor() != pieces[king_x][king_y]->getColor()) {//piece is valid and color is opposite of the king's color
 				std::pair<int, int> start_check = std::make_pair{ x, y };
-				std::pair<int, int> end_check = std::make_pair{ king_x, king_y };
+				std::pair<int, int> end_check = std::make_pair<int, int>{ king_x, king_y };
 				if (pieces[x][y]->validMove(this, start_check, end_check)) {
 					king_in_check = true;
 					break;
@@ -119,15 +124,15 @@ bool check(int king_color) {
 	return king_in_check;
 }
 
-int checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate, 2 = stalemate
+int Board::checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate, 2 = stalemate
 	bool valid_moves = false;
 	for (int i = 0; i < row; ++i) {
 		for (int j = 0; j < col; ++j) {
 			for (int y = 0; y < row; ++y) {
 				for (int x = 0; x < col; ++x) {
-					std::pair<int, int> start = std::make_pair{ j, i };
-					std::pair<int, int> end = std::make_pair{ x, y };
-					if (piece[j][i]->getColor() == color && piece[j][i]->validMove(this, start, end)) {
+					std::pair<int, int> start = std::make_pair( j, i );
+					std::pair<int, int> end = std::make_pair( x, y );
+					if (pieces[j][i]->getColor() == color && pieces[j][i]->validMove(this, start, end)) {
 						valid_moves = true;
 						break;
 					}
@@ -153,16 +158,16 @@ std::vector<Move> Board::listMoves(int colour) {
 		for (int j = 0; j < col; ++j) {
 			for (int y = 0; y < row; ++y) {
 				for (int x = 0; x < col; ++x) {
-					std::pair<int, int> start = std::make_pair{ j, i };
-					std::pair<int, int> end = std::make_pair{ x, y };
-					if (piece[j][i]->validMove(this, start, end)) {
+					std::pair<int, int> start = std::make_pair( j, i );
+					std::pair<int, int> end = std::make_pair( x, y );
+					if (pieces[j][i]->validMove(this, start, end)) {
 						bool is_capture, is_check, is_checkmate;
-						if (piece[end.first][end.second]) {
-							capture = true;
+						if (pieces[end.first][end.second]) {
+							is_capture = true;
 						}
-						is_check = check(!piece[j][i]->getColor());//checking opposite colour piece
-						if (checkmate(!piece[j][i]->getColor()) == 1) {
-							checkmate = true;
+						is_check = check(!pieces[j][i]->getColor());//checking opposite colour piece
+						if (checkmate(!pieces[j][i]->getColor()) == 1) {
+							is_checkmate = true;
 						}
 						Move m{ start, end, is_capture, is_check, is_checkmate };
 						moves.emplace_back(m);

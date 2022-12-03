@@ -6,7 +6,9 @@
 struct Move;
 
 class Player {
-	virtual std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves) = 0;
+	int color;
+	public:
+		virtual std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves) = 0;
 };
 
 #endif

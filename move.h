@@ -7,7 +7,9 @@ class Piece;
 struct Move {
 	std::pair<int, int> start;
 	std::pair<int, int> end;
-	Piece* capture;
+	bool capture;
+	bool check;
+	bool checkmate;
 };
 
 #endif

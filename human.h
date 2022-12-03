@@ -8,9 +8,9 @@
 struct Move;
 
 class Human : Player {
-	std::istream in;
+	std::istream &in;
 	public: 
-		Player(std::istream in);
+		Human(std::istream &in);
 		std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves);
 };
 

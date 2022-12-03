@@ -11,11 +11,13 @@ class Board {
 	Piece*** pieces;
 	char** board;
 	public:
-		Board(row, col, char** board);
+		Board(int row, int col, char** board);
 		bool checkMove(Move m);
 		char** getState();
 		int checkmate(int color);
+		bool check(int king_color);
 		std::vector<Move> listMoves(int colour);
+		~Board();
 };
 
 #endif
