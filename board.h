@@ -2,18 +2,19 @@
 #define BOARD_H
 #include <utility>
 #include <vector>
+#include <memory>
 
 struct Move;
 class Piece;
 
 class Board {
 	int row, col;
-	Piece*** pieces;
-	char** board;
+	std::vector<std::vector<std::unique_ptr<Piece>>> pieces;
+	std::vector<std::vector<char>> board;
 	public:
-		Board(int row, int col, char** board);
+		Board(int row, int col, std::vector<std::vector<char>> board);
 		bool checkMove(Move m);
-		char** getState();
+		std::vector<std::vector<char>> getState();
 		Piece* getPiece(std::pair<int, int> coords);
 		bool check(int king_color);
 		int checkmate(int color);

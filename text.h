@@ -6,7 +6,7 @@
 class Text: public Viewer {
   std::ostream &out;
   public:
-  void update(char **board) override;//(char board[rows][cols]) override;
+  void update(std::vector<std::vector<char>> board) override;//(char board[rows][cols]) override;
   Text(std::ostream &out);
 };
 #endif

@@ -1,5 +1,6 @@
 #include <vector>
 #include <utility>
+#include <memory>
 #include "move.h"
 #include "board.h"
 #include "pawn.h"
@@ -10,93 +11,84 @@
 #include "king.h"
 //#include "piece.h"
 
-//Piece** might not be correct and might have to change how to initialize the board
-
-Board::Board(int row, int col, char** board) : row{ row }, col{ col }, board { board } {
-	this->board = new char*[col];
-	pieces = new Piece**[col];
-
+Board::Board(int row, int col, std::vector<std::vector<char>> board) : row{ row }, col{ col }, board { board } {
 	for (int i = 0; i < row; ++i) {
-		this->board[i] = new char[row];
-		pieces[i] = new Piece * [row];
+		std::vector<std::unique_ptr<Piece>> piece_row;
 
 		for (int j = 0; j < col; ++j) {
-			this->board[j][i] = board[j][i];
 			if (board[j][i] >= 'a' && board[j][i] <= 'z') {
 				if (board[j][i] == 'p') {
-					Piece* p = new Pawn{ 1 };
-					pieces[j][i] = new Pawn{ 1 }; // black
+					piece_row.emplace_back(std::make_unique<Pawn>(1)); // black
 				}
 				else if (board[j][i] == 'r') {
-					pieces[j][i] = new Rook{ 1 };
+					piece_row.emplace_back(std::make_unique<Rook>(1));
 				}
 				else if (board[j][i] == 'n') {
-					pieces[j][i] = new Knight{ 1 };
+					piece_row.emplace_back(std::make_unique<Knight>(1));
 				}
 				else if (board[j][i] == 'b') {
-					pieces[j][i] = new Bishop{ 1 };
+					piece_row.emplace_back(std::make_unique<Bishop>(1));
 				}
 				else if (board[j][i] == 'q') {
-					pieces[j][i] = new Queen{ 1 };
+					piece_row.emplace_back(std::make_unique<Queen>(1));
 				}
 				else {
-					pieces[j][i] = new King{ 1 };
+					piece_row.emplace_back(std::make_unique<King>(1));
 				}
 			}
 			else {
 				if (board[j][i] == 'P') {
-					pieces[j][i] = new Pawn{ 0 }; // white
+					piece_row.emplace_back(std::make_unique<Pawn>(0)); // white
 				}
 				else if (board[j][i] == 'R') {
-					pieces[j][i] = new Rook{ 0 };
+					piece_row.emplace_back(std::make_unique<Rook>(0));
 				}
 				else if (board[j][i] == 'N') {
-					pieces[j][i] = new Knight{ 0 };
+					piece_row.emplace_back(std::make_unique<Knight>(0));
 				}
 				else if (board[j][i] == 'B') {
-					pieces[j][i] = new Bishop{ 0 };
+					piece_row.emplace_back(std::make_unique<Bishop>(0));
 				}
 				else if (board[j][i] == 'Q') {
-					pieces[j][i] = new Queen{ 0 };
+					piece_row.emplace_back(std::make_unique<Queen>(0));
 				}
-				else {
-					pieces[j][i] = new King{ 0 };
+				else if (board[j][i] == 'K') {
+					piece_row.emplace_back(std::make_unique<King>(0));
 				}
 			}
 		}
+		pieces.emplace_back(std::move(piece_row));
 	}
 }
 
 bool Board::checkMove(Move m) {
-	//rework this: pieces no longer return a type Move
 	if (pieces[m.start.first][m.start.second]->validMove(this, m.start, m.end)) {//check if piece can move there
-		Piece* captured_piece = nullptr;
+		std::unique_ptr<Piece> captured_piece;
 		//hang on to potentially captured piece
 		if (pieces[m.end.first][m.end.second]) {
-			captured_piece = pieces[m.end.first][m.end.second];
+			captured_piece = std::move(pieces[m.end.first][m.end.second]);
 		}
 		//make the move
-		pieces[m.end.first][m.end.second] = pieces[m.start.first][m.start.second];
-		pieces[m.start.first][m.start.second] = nullptr;
+		pieces[m.end.first][m.end.second] = std::move(pieces[m.start.first][m.start.second]);
+		pieces[m.start.first][m.start.second].reset();
 
 		// revert move if king ends up in check
 		if (check(pieces[m.start.first][m.start.second]->getColor())) {
-			pieces[m.start.first][m.start.second] = pieces[m.end.first][m.end.second];
-			pieces[m.end.first][m.end.second] = captured_piece;
+			pieces[m.start.first][m.start.second] = std::move(pieces[m.end.first][m.end.second]);
+			pieces[m.end.first][m.end.second] = std::move(captured_piece);
 			throw ("bad_move"); //might change
 		}
-
 		return true;
 	}
 	return false;
 }
 
-char** Board::getState() {
+std::vector<std::vector<char>> Board::getState() {
 	return board;
 }
 
 Piece* Board::getPiece(std::pair<int, int> coords) {
-	return pieces[coords.first][coords.second];
+	return pieces[coords.first][coords.second].get();
 }
 
 bool Board::check(int king_color) {
@@ -105,7 +97,7 @@ bool Board::check(int king_color) {
 	int king_y = 0;
 	for (int y = 0; y < row; ++y) {
 		for (int x = 0; x < col; ++x) {
-			Piece* king = dynamic_cast<King*>(pieces[x][y]);
+			Piece *king = dynamic_cast<King*>(pieces[x][y].get());
 			if (king && pieces[x][y]->getColor() == king_color) {//piece is a king and matches the color of the moving piece
 				king_x = x;
 				king_y = y;
@@ -192,9 +184,4 @@ std::vector<Move> Board::listMoves(int color) {
 	return moves;
 }
 
-Board::~Board() {
-	for (int i = 0; i < row; ++i) {
-		delete []pieces[i];
-	}
-	delete []pieces;
-}
+Board::~Board() {}

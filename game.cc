@@ -11,50 +11,48 @@
 #include "move.h"
 #include <string>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 void Game::updateViewers()
 {
-	char** cur = board->getState(); //had cur[rows][cols]
-	for (auto viewer : viewers) {
-		viewer->update(cur);
+	std::vector<std::vector<char>> cur = board->getState(); //had cur[rows][cols]
+	for (auto viewer = viewers.begin(); viewer != viewers.end(); ++viewer) {
+		viewer->get()->update(cur);
 	}
 }
 
 void Game::play()
 {
-	Text *text = new Text(std::cout); // This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
+	// This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
 	// Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
-
+#if
 	std::string command;
 	while (std::cin >> command)
 	{
 		if (command == "game")
 		{
-			board = new Board(rows, cols, start);
+			game_running = true;
+			board = std::make_unique<Board>(rows, cols, start);
 			for (int i = 0; i < numplayers; ++i)
 			{
 				std::string player;
 				std::cin >> player;
 				if (player == "human")
 				{
-					Human* plyr = new Human(i, std::cin);
-					players.emplace_back(plyr);
+					players.emplace_back(std::make_unique<Human>(i, std::cin));
 				}
 				else if (player == "computer1")
 				{
-					Level1* plyr = new Level1(i);
-					players.emplace_back(plyr);
+					players.emplace_back(std::make_unique<Level1>(i));
 				}
 				else if (player == "computer2")
 				{
-					Level2* plyr = new Level2(i);
-					players.emplace_back(plyr);
+					players.emplace_back(std::make_unique<Level2>(i));
 				}
 				else if (player == "computer3")
 				{
-					Level3* plyr = new Level3(i);
-					players.emplace_back(plyr);
+					players.emplace_back(std::make_unique<Level3>(i));
 				}
 				/*} else if (player == "computer4") {
 						Level4 *plyr = new Level4(); // what arguments??
@@ -67,12 +65,12 @@ void Game::play()
 					break; // break to reset input
 				}
 			}
-			viewers.emplace_back(text);
+			viewers.emplace_back(std::make_unique<Text>(std::cout));
 			// viewers.emplace_back(graphic);
 		}
 		else if (command == "resign")
 		{ // this would need to change if >2 players- basically just check turn mod numplayers
-			if (!board)
+			if (!game_running)
 			{
 				std::cout << "The game has ended. Please start a new game before resigning." << std::endl;
 				continue;
@@ -86,16 +84,11 @@ void Game::play()
 				}
 			}
 			// effectively ends game - should delete all associated memory (board + players, maybe viewers?)
-			delete board;
-			for (int i = 0; i < numplayers; ++i)
-			{
-				delete players.back();
-				players.pop_back();
-			} //?????
+			game_running = false;
 		}
 		else if (command == "move")
 		{
-			if (!board)
+			if (!game_running)
 			{
 				std::cout << "The game has ended. Please start a new game before making moves." << std::endl;
 				continue;
@@ -123,6 +116,7 @@ void Game::play()
 	}
 	// print final score, white wins and black wins
 	// delete stuff? Or will it all be deleted in destructor?
+#endif
 }
 /*void Game::setup()
 {
@@ -157,6 +151,7 @@ void Game::play()
 }*/
 void Game::checkEnd()
 {
+#if
 	bool end = false;
 	int curplayer = turn % numplayers;
 	int nextplayer = curplayer + 1;
@@ -182,23 +177,10 @@ void Game::checkEnd()
 
 	if (end)
 	{
-		// delete board and all players
-		delete board;
-		for (int i = 0; i < numplayers; ++i)
-		{
-			delete players.back();
-			players.pop_back();
-		}
+		game_running = false;
 	}
 	// do we need to account for insufficient material end case?????????
 	// do we need to add in 50-move rule or agreement or repetition?????
+#endif
 }
-Game::~Game()
-{
-	while (!viewers.empty())
-	{
-		delete viewers.back();
-		viewers.pop_back();
-	}
-	// is there any case here where I should also delete board and players??
-}
+Game::~Game() {}

@@ -4,7 +4,7 @@
 #include <iostream>
 
 Graphics::Graphics() {
-    xw = new Xwindow(rows * 100, cols * 100);
+    xw = std::make_unique<Xwindow>(rows * 100, cols * 100);
     for (int a = 0; a < rows; ++a) {
         for (int b = 0; b < cols; ++b) {
             if ((a + b) % 2) {
@@ -23,7 +23,7 @@ Graphics::Graphics() {
     }
 }
 
-void Graphics::update(char **board) {//(char board[rows][cols]) {
+void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows][cols]) {
         for (int i=0; i< rows; ++i) {
                 for (int j=0; j< cols; ++j) {
                         if (board[i][j] != curboard[i][j]) {
@@ -39,6 +39,4 @@ void Graphics::update(char **board) {//(char board[rows][cols]) {
         }
 }
 
-Graphics::~Graphics() {
-        delete xw;
-}
+Graphics::~Graphics() {}

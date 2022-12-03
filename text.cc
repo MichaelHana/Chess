@@ -3,7 +3,7 @@
 #include <iostream>
 
 // need to ensure that will always be passed a 2d char array of the correct size (rows, cols) or this might seg fault?? - otherwise can change to determining rows and cols by size of board, then filling in board will blanks if its the wrong size??
-void Text::update(char **board) {//(char board[rows][cols]) {
+void Text::update(std::vector<std::vector<char>> board) {//(char board[rows][cols]) {
         // could use black piece symbols with diff font colour for multiplayer
 
         //int rows = sizeof board / sizeof board[0];
