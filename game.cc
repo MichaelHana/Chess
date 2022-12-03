@@ -31,6 +31,8 @@ void Game::play()
 	{
 		if (command == "game")
 		{
+			//int row = rows;
+			//int col = cols;
 			// reset turn to 0
 			// delete current board, players, viewers(??)? will this have - should actually just do this when game ends so players can't keep making moves on an already finished game
 			board = new Board(rows, cols, start);
@@ -93,7 +95,7 @@ void Game::play()
 			board = nullptr;
 			for (int i = 0; i < numplayers; ++i)
 			{
-				delete vector<Player *>::back(players);
+				delete players.back();
 				players.pop_back();
 			} //?????
 		}
@@ -106,7 +108,7 @@ void Game::play()
 			}
 			int curplayer = turn % numplayers;
 			// vector<Move *> validmoves = board.listmoves(); //ensure its not empty!!!
-			std::pair<std::pair<int, int>, std::pair<int, int>> playermove = players[curplayer]->getMove(board.listmoves());
+			Move playermove = players[curplayer]->getMove(board.listmoves()); //std::pair<std::pair<int, int>, std::pair<int, int>>
 			board->checkMove(playermove);
 			updateViewers();
 			// get player move - what is the type I should take it as??
@@ -115,7 +117,7 @@ void Game::play()
 			checkEnd();
 			turn++;
 		}
-		else if (command == "setup")
+		/*else if (command == "setup")
 		{
 			if (!board)
 			{
@@ -123,7 +125,7 @@ void Game::play()
 				continue;
 			}
 			setup();
-		}
+		}*/
 		else
 		{
 			std::cout << command << " is not a valid command" << std::endl;
@@ -132,7 +134,7 @@ void Game::play()
 	// print final score, white wins and black wins
 	// delete stuff? Or will it all be deleted in destructor?
 }
-void Game::setup()
+/*void Game::setup()
 {
 	std::string command;
 	if (command == "+")
@@ -162,12 +164,12 @@ void Game::setup()
 		std::cout
 			<< command << " is not a valid command, please enter one of [+ K e1], [- e1], [= colour] or [done]" << std::endl;
 	}
-}
-int checkEnd()
+}*/
+int Game::checkEnd()
 {
 	bool end = false;
-	curplayer = turn % numplayers;
-	nextplayer = curplayer + 1;
+	int curplayer = turn % numplayers;
+	int nextplayer = curplayer + 1;
 	if (nextplayer >= numplayers)
 	{
 		nextplayer -= numplayers;
@@ -190,7 +192,7 @@ int checkEnd()
 		}
 		// if end, update wins, and delete board, players
 	}*/
-	int state = board->checkmate(nextplayer->colour);
+	int state = board->checkmate(players[nextplayer]->colour);
 	if (state == 1) // checkmate
 	{				// what are conditions for win/end??????? just checkmate???
 		end = true;

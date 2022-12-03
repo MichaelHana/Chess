@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-void Graphics::update(char board[rows][cols]) {
+void Graphics::update(char **board) {//(char board[rows][cols]) {
         for (int i=0; i< rows; ++i) {
                 for (int j=0; j< cols; ++j) {
                         if (board[i][j] != curboard[i][j]) {
