@@ -14,7 +14,7 @@
 
 void Game::updateViewers()
 {
-	char cur[rows][cols] = board->getState();
+	char** cur = board->getState(); //had cur[rows][cols]
 	for (Viewer *viewer : viewers)
 	{
 		viewer->update(cur);
@@ -203,7 +203,7 @@ int Game::checkEnd()
 	else if (state == 2)
 	{ // stalemate
 		end = true;
-		for (j = 0; j < numplayers; ++j)
+		for (int j = 0; j<numplayers; ++j)
 		{
 			wins[j] += 0.5;
 		}
@@ -214,7 +214,7 @@ int Game::checkEnd()
 		board = nullptr;
 		for (int i = 0; i < numplayers; ++i)
 		{
-			delete vector<Player *>::back(players);
+			delete players.back();
 			players.pop_back();
 		}
 		// delete all players
@@ -222,11 +222,11 @@ int Game::checkEnd()
 	// do we need to account for insufficient material end case?????????
 	// do we need to add in 50-move rule or agreement or repetition?????
 }
-Game::~Game
+Game::~Game()
 {
-	while (viewers[0])
+	while (!viewers.empty())
 	{
-		delete vector<Viewer *>::back(viewers);
+		delete viewers.back();
 		viewers.pop_back();
 	} //?????
 	  // is there any case here where I should also delete board and players??

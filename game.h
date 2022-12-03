@@ -19,5 +19,6 @@ public:
 	void updateViewers();
 	void setup();
 	int checkEnd();
+	~Game();
 };
 #endif
