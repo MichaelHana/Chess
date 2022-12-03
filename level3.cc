@@ -3,7 +3,9 @@
 #include "level3.h"
 #include "move.h"
 
-std::pair<std::pair<int, int>, std::pair<int, int>> Level3::getMove(std::vector<Move> moves) {
+Level3::Level3(int color) : Computer{ color } {};
+
+Move Level3::getMove(std::vector<Move> moves) {
 	std::vector<Move> filter;
 
 	for (auto i : moves) {
@@ -14,9 +16,9 @@ std::pair<std::pair<int, int>, std::pair<int, int>> Level3::getMove(std::vector<
 
 	if (filter.size() > 0) {
 		int random = rand() % filter.size();
-		return std::make_pair( filter[random].start, filter[random].end );
+		return filter[random];
 	}
 
 	int random = rand() % moves.size();
-	return std::make_pair( moves[random].start, moves[random].end );
+	return moves[random];
 }

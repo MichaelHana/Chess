@@ -10,8 +10,8 @@ struct Move;
 class Human : public Player {
 	std::istream &in;
 	public: 
-		Human(std::istream &in);
-		std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves);
+		Human(int color, std::istream &in);
+		Move getMove(std::vector<Move> moves);
 };
 
 #endif

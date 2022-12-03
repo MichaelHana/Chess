@@ -8,7 +8,8 @@ struct Move;
 
 class Level3: public Computer {
 	public:
-		std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves);
+		Level3(int color);
+		Move getMove(std::vector<Move> moves);
 };
 
 #endif

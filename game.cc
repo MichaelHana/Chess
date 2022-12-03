@@ -8,6 +8,7 @@
 // include "level4.h"
 #include "text.h"
 // include "graphics.h"
+#include "move.h"
 #include <string>
 #include <iostream>
 #include <vector>
@@ -15,8 +16,7 @@
 void Game::updateViewers()
 {
 	char** cur = board->getState(); //had cur[rows][cols]
-	for (Viewer *viewer : viewers)
-	{
+	for (auto viewer : viewers) {
 		viewer->update(cur);
 	}
 }
@@ -31,45 +31,40 @@ void Game::play()
 	{
 		if (command == "game")
 		{
-			//int row = rows;
-			//int col = cols;
-			// reset turn to 0
-			// delete current board, players, viewers(??)? will this have - should actually just do this when game ends so players can't keep making moves on an already finished game
 			board = new Board(rows, cols, start);
 			for (int i = 0; i < numplayers; ++i)
 			{
 				std::string player;
 				std::cin >> player;
-				// Player *plyr;
 				if (player == "human")
 				{
-					Human *plyr = new Human(std::cin);
+					Human* plyr = new Human(i, std::cin);
 					players.emplace_back(plyr);
 				}
 				else if (player == "computer1")
 				{
-					Level1 *plyr = new Level1(); // what arguments??
+					Level1* plyr = new Level1(i);
 					players.emplace_back(plyr);
 				}
 				else if (player == "computer2")
 				{
-					Level2 *plyr = new Level2(); // what arguments??
+					Level2* plyr = new Level2(i);
 					players.emplace_back(plyr);
 				}
 				else if (player == "computer3")
 				{
-					Level3 *plyr = new Level3(); // what arguments??
+					Level3* plyr = new Level3(i);
 					players.emplace_back(plyr);
-					/*} else if (player == "computer4") {
+				}
+				/*} else if (player == "computer4") {
 						Level4 *plyr = new Level4(); // what arguments??
 						players.emplace_back(plyr);
-						break;*/
-				}
+						break;
+				}*/
 				else
 				{
 					std::cout << "invalid player :" << player << std::endl;
-					break;
-					// should this break and reset everything??
+					break; // break to reset input
 				}
 			}
 			viewers.emplace_back(text);
@@ -92,7 +87,6 @@ void Game::play()
 			}
 			// effectively ends game - should delete all associated memory (board + players, maybe viewers?)
 			delete board;
-			board = nullptr;
 			for (int i = 0; i < numplayers; ++i)
 			{
 				delete players.back();
@@ -107,13 +101,9 @@ void Game::play()
 				continue;
 			}
 			int curplayer = turn % numplayers;
-			// vector<Move *> validmoves = board.listmoves(); //ensure its not empty!!!
-			Move playermove = players[curplayer]->getMove(board.listmoves()); //std::pair<std::pair<int, int>, std::pair<int, int>>
+			Move playermove = players[curplayer]->getMove(board->listMoves(players[curplayer]->getColor()));
 			board->checkMove(playermove);
 			updateViewers();
-			// get player move - what is the type I should take it as??
-			//  update board with move - checkmove??
-			// call updateviewers with argument from board.getstate()
 			checkEnd();
 			turn++;
 		}
@@ -165,40 +155,21 @@ void Game::play()
 			<< command << " is not a valid command, please enter one of [+ K e1], [- e1], [= colour] or [done]" << std::endl;
 	}
 }*/
-int Game::checkEnd()
+void Game::checkEnd()
 {
 	bool end = false;
 	int curplayer = turn % numplayers;
 	int nextplayer = curplayer + 1;
 	if (nextplayer >= numplayers)
 	{
-		nextplayer -= numplayers;
+		nextplayer -= 0;
 	}
 
-	/*for (Player *player : players)
-	{
-		int state = board->checkmate(player->colour);
-		if (state == 1) //checkmate
-		{ // what are conditions for win/end??????? just checkmate???
-			end = true;
-			wins[curplayer]++; //curplayer shouldn't be in check since they can't move themselves into check
-			// win?? add to one player's score?????
-			//
-		} else if (state == 2) { //stalemate
-			end = true;
-			for (j=0; j< numplayers; ++j) {
-				wins[j] += 0.5;
-			}
-		}
-		// if end, update wins, and delete board, players
-	}*/
-	int state = board->checkmate(players[nextplayer]->colour);
+	int state = board->checkmate(players[nextplayer]->getColor());
 	if (state == 1) // checkmate
-	{				// what are conditions for win/end??????? just checkmate???
+	{
 		end = true;
-		wins[curplayer]++; // curplayer shouldn't be in check since they can't move themselves into check
-						   // win?? add to one player's score?????
-						   //
+		wins[curplayer]++;
 	}
 	else if (state == 2)
 	{ // stalemate
@@ -208,16 +179,16 @@ int Game::checkEnd()
 			wins[j] += 0.5;
 		}
 	}
+
 	if (end)
 	{
+		// delete board and all players
 		delete board;
-		board = nullptr;
 		for (int i = 0; i < numplayers; ++i)
 		{
 			delete players.back();
 			players.pop_back();
 		}
-		// delete all players
 	}
 	// do we need to account for insufficient material end case?????????
 	// do we need to add in 50-move rule or agreement or repetition?????
@@ -228,6 +199,6 @@ Game::~Game()
 	{
 		delete viewers.back();
 		viewers.pop_back();
-	} //?????
-	  // is there any case here where I should also delete board and players??
+	}
+	// is there any case here where I should also delete board and players??
 }

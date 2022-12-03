@@ -8,8 +8,9 @@ struct Move;
 class Player {
 	int color;
 	public:
+		Player(int color);
 		int getColor();
-		virtual std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves) = 0;
+		virtual Move getMove(std::vector<Move> moves) = 0;
 };
 
 #endif

@@ -4,6 +4,9 @@
 #include <vector>
 #include "board.h"
 
+class Player;
+class Viewer;
+
 class Game {
 	int turn = 0;
 	static const int numplayers = 2;
@@ -18,7 +21,7 @@ public:
 	void play();
 	void updateViewers();
 	void setup();
-	int checkEnd();
+	void checkEnd();
 	~Game();
 };
 #endif

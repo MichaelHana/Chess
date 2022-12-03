@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
 #include "human.h"
+#include "move.h"
 
-Human::Human(std::istream &in) : in{ in } {}
+Human::Human(int color, std::istream& in) : in{ in }, Player{ color } {}
 
-std::pair<std::pair<int, int>, std::pair<int, int>> Human::getMove(std::vector<Move> moves) {
+Move Human::getMove(std::vector<Move> moves) {
 	std::string start, end;
 	in >> start >> end;
 	
@@ -25,5 +26,12 @@ std::pair<std::pair<int, int>, std::pair<int, int>> Human::getMove(std::vector<M
 	std::pair<int, int> start_move = std::make_pair( start_x, start_y );
 	std::pair<int, int> end_move = std::make_pair( end_x, end_y );
 
-	return std::make_pair( start_move, end_move );
+	int i = 0;
+	for (; i < moves.size(); ++i) {
+		if (start_move == moves[i].start && end_move == moves[i].end) {
+			break;
+		}
+	}
+
+	return moves[i];
 }
