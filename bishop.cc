@@ -20,7 +20,7 @@ bool Bishop::validMove(Board* board, std::pair<int, int> start, std::pair<int, i
 		}
 	}
 	// check if end blocked by friendly piece
-	if (board->getPiece(end) != false && board->getPiece(end)->getColor() == color) {
+	if (board->getPiece(end) && board->getPiece(end)->getColor() == color) {
 		return false;
 	}
 

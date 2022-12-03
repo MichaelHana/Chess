@@ -13,7 +13,7 @@ bool Knight::validMove(Board* board, std::pair<int, int> start, std::pair<int, i
 		return false;
 	}
 	// check if blocked by friendly piece
-	if (board->getPiece(end) != nullptr && board->getPiece(end)->getColor() == color) {
+	if (board->getPiece(end) && board->getPiece(end)->getColor() == color) {
 		return false;
 	}
 

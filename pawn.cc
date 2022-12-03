@@ -16,18 +16,18 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 			} else if (end.second - start.second == -2) { // two spaces
 				if (moved) { // already moved
 					return false;
-				} else if (board->getPiece(std::make_pair(start.first, start.second - 1)) != nullptr) { // piece in the way
+				} else if (board->getPiece(std::make_pair(start.first, start.second - 1))) { // piece in the way
 					return false;
-				} else if (board->getPiece(end) != nullptr) { // piece in the way
+				} else if (board->getPiece(end)) { // piece in the way
 					return false;
 				}
 			} else if (end.second - start.second == -1) { // one space
-				if (board->getPiece(end) != nullptr) { // blocked
+				if (board->getPiece(end)) { // blocked
 					return false;
 				}
 			}
 		} else if (abs(start.first - end.first) == 1 && end.second - start.second == -1) { // diagonal move: capture
-			if (board->getPiece(end) == nullptr) { // no piece to capture
+			if (!board->getPiece(end)) { // no piece to capture
 				return false;
 			} else if (board->getPiece(end)->getColor() == color) { // friendly piece to capture
 				return false;
@@ -42,9 +42,9 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 			} else if (end.second - start.second == 2) { // two spaces
 				if (moved) { // already moved
 					return false;
-				} else if (board->getPiece(std::make_pair(start.first, start.second + 1)) != nullptr) { // piece in the way
+				} else if (board->getPiece(std::make_pair(start.first, start.second + 1))) { // piece in the way
 					return false;
-				} else if (board->getPiece(end) != nullptr) { // piece in the way
+				} else if (board->getPiece(end)) { // piece in the way
 					return false;
 				}
 			} else if (end.second - start.second == 1) { // one space
@@ -53,7 +53,7 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 				}
 			}
 		} else if (abs(start.first - end.first) == 1 && end.second - start.second == 1) { // diagonal move: capture
-			if (board->getPiece(end) == nullptr) { // no piece to capture
+			if (!board->getPiece(end)) { // no piece to capture
 				return false;
 			} else if (board->getPiece(end)->getColor() == color) { // friendly piece to capture
 				return false;
