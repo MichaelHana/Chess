@@ -7,7 +7,7 @@
 
 struct Move;
 
-class Human : Player {
+class Human : public Player {
 	std::istream &in;
 	public: 
 		Human(std::istream &in);

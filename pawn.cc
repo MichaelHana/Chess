@@ -63,5 +63,5 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 		}
 	}
 
-	return Move(start, end, board->getPiece(end));
+	return true;
 }

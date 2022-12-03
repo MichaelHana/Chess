@@ -6,7 +6,7 @@
 
 struct Move;
 
-class Level1: Computer {
+class Level1 : public Computer{
 	public:
 		std::pair<std::pair<int, int>, std::pair<int, int>> getMove(std::vector<Move> moves);
 };

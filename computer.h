@@ -2,6 +2,6 @@
 #define COMPUTER_H
 #include "player.h"
 
-class Computer: Player {};
+class Computer: public Player {};
 
 #endif

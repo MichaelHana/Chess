@@ -5,6 +5,7 @@
 class Board;
 
 class Piece {
+protected:
 	int color;
 	bool moved;
 public:

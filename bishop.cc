@@ -6,7 +6,7 @@
 
 Bishop::Bishop(int color) : Piece(color) {}
 
-Move Bishop::checkMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) {
+bool Bishop::validMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) {
 	// assumed that board checks move is in bounds
 
 	// check move distance
@@ -24,5 +24,5 @@ Move Bishop::checkMove(Board* board, std::pair<int, int> start, std::pair<int, i
 		return false;
 	}
 
-	return Move(start, end, board->getPiece(end));
+	return true;
 }
