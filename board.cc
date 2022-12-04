@@ -220,6 +220,8 @@ std::vector<Move> Board::listMoves(int color) {
 				
 							// break if move makes you in check
 							if (check(pieces[end.second][end.first]->getColor())) {
+								pieces[i][j] = std::move(pieces[end.second][end.first]);
+								pieces[end.second][end.first] = std::move(captured_piece);
 								break;
 							}
 							

@@ -99,17 +99,16 @@ void Game::play()
 			bool valid_move = false;
 
 			//for debugging
-			std::cout << "Moves: " << std::endl;
+			/*std::cout << "Moves: " << std::endl;
 			for (size_t i = 0; i < moves.size(); ++i) {
 				std::cout << "startx: " << moves[i].start.first << " starty: " << moves[i].start.second << " endx: " << moves[i].end.first << " endy: " << moves[i].end.second << std::endl;
 			}
-			std::cout << "end moves" << std::endl;
+			std::cout << "end moves" << std::endl;*/
 
 			if (moves.size() > 0) {
 				Move playermove = players[curplayer]->getMove(moves);
-				std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
+//				std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
 				valid_move = board->checkMove(playermove);
-				std::cout << "valid: " << valid_move << std::endl;
 
 				//temporary
 				std::vector<std::vector<char>> b = board->getState();

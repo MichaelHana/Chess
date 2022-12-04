@@ -24,7 +24,7 @@ bool Queen::validMove(Board* board, std::pair<int, int> start, std::pair<int, in
 	}*/
 
 	int x = start.first, y = start.second;
-	while (x != end.first && y != end.second) {
+	while (x != end.first || y != end.second) {
 		int difference_x = end.first - start.first;
 		int difference_y = end.second - start.second;
 
