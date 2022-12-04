@@ -2,6 +2,7 @@
 #include "symbols.h"
 #include <string>
 #include <iostream>
+#include <memory>
 
 Graphics::Graphics() {
     xw = std::make_unique<Xwindow>(rows * 100, cols * 100);

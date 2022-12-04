@@ -66,7 +66,7 @@ void Game::play()
 					break; // break to reset input
 				}
 			}
-			viewers.emplace_back(std::make_unique<Text>(std::cout));
+			//viewers.emplace_back(std::make_unique<Text>(std::cout));
 			// viewers.emplace_back(graphic);
 		}
 		else if (command == "resign")
@@ -98,9 +98,25 @@ void Game::play()
 			std::vector<Move> moves = board->listMoves(players[curplayer]->getColor());
 			bool valid_move = false;
 
+			//for debugging
+			std::cout << "Moves: " << std::endl;
+			for (size_t i = 0; i < moves.size(); ++i) {
+				std::cout << "startx: " << moves[i].start.first << "starty: " << moves[i].start.second << std::endl;
+			}
+			std::cout << "end moves: " << std::endl;
+
 			if (moves.size() > 0) {
 				Move playermove = players[curplayer]->getMove(board->listMoves(players[curplayer]->getColor()));
 				valid_move = board->checkMove(playermove);
+
+				//temporary
+				std::vector<std::vector<char>> b = board->getState();
+				for (size_t i = 0; i < b.size(); ++i) {
+					for (size_t j = 0; j < b[i].size(); ++j) {
+						std::cout << b[i][j] << std::endl;
+					}
+					std::cout << std::endl;
+				}
 			}
 			//updateViewers();
 			if (valid_move) {

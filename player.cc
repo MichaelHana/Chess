@@ -2,6 +2,6 @@
 
 Player::Player(int color) : color{ color } {}
 
-Player::getColor() {
+int Player::getColor() {
 	return color;
 }

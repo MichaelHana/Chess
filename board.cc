@@ -88,7 +88,9 @@ std::vector<std::vector<char>> Board::getState() {
 }
 
 Piece* Board::getPiece(std::pair<int, int> coords) {
-	return pieces[coords.second][coords.first].get();
+	if (coords.first >= 0 && coords.second >= 0 && coords.second <= pieces.size() && coords.first <= pieces[coords.second].size() && pieces[coords.second][coords.first].get()) {
+		return pieces[coords.second][coords.first].get();
+	}
 }
 
 bool Board::check(int king_color) {
