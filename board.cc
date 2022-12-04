@@ -158,23 +158,26 @@ std::vector<Move> Board::listMoves(int color) {
 	}
 
 	//loop through all pieces and through all squares and check for valid move
-	for (int i = 0; i < row; ++i) {
-		for (int j = 0; j < col; ++j) {
-			for (int y = 0; y < row; ++y) {
-				for (int x = 0; x < col; ++x) {
-					std::pair<int, int> start = std::make_pair( j, i );
-					std::pair<int, int> end = std::make_pair( x, y );
-					if (pieces[j][i]->validMove(this, start, end) && pieces[j][i]->getColor() == color) {
-						bool is_capture = false, is_check = false, is_checkmate = false;
-						if (pieces[end.first][end.second]) {
-							is_capture = true;
+	for (size_t i = 0; i < row; ++i) {
+		for (size_t j = 0; j < col; ++j) {
+			for (size_t y = 0; y < row; ++y) {
+				for (size_t x = 0; x < col; ++x) {
+					if (pieces[j][i]) {
+						std::pair<int, int> start = std::make_pair( j, i );
+						std::pair<int, int> end = std::make_pair( x, y );
+						if (pieces[j][i]->validMove(this, start, end) && pieces[j][i]->getColor() == color) {
+							bool is_capture = false, is_check = false, is_checkmate = false;
+							if (pieces[end.first][end.second]) {
+								is_capture = true;
+							}
+							is_check = check(opposite_color);//checking opposite colour piece
+							if (checkmate(opposite_color) == 1) {
+								is_checkmate = true;
+							}
+							Move m{ start, end, is_capture, is_check, is_checkmate };
+							moves.emplace_back(m);
+					
 						}
-						is_check = check(opposite_color);//checking opposite colour piece
-						if (checkmate(opposite_color) == 1) {
-							is_checkmate = true;
-						}
-						Move m{ start, end, is_capture, is_check, is_checkmate };
-						moves.emplace_back(m);
 					}
 				}
 			}
