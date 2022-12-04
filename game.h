@@ -1,12 +1,13 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef GAME_H
+#define GAME_H
 
 #include <vector>
 #include <memory>
 #include "board.h"
 #include "viewer.h"
+#include "player.h"
 
-class Player;
+//class Player;
 
 class Game {
 	int turn = 0;

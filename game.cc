@@ -101,19 +101,21 @@ void Game::play()
 			//for debugging
 			std::cout << "Moves: " << std::endl;
 			for (size_t i = 0; i < moves.size(); ++i) {
-				std::cout << "startx: " << moves[i].start.first << "starty: " << moves[i].start.second << std::endl;
+				std::cout << "startx: " << moves[i].start.first << " starty: " << moves[i].start.second << " endx: " << moves[i].end.first << " endy: " << moves[i].end.second << std::endl;
 			}
-			std::cout << "end moves: " << std::endl;
+			std::cout << "end moves" << std::endl;
 
 			if (moves.size() > 0) {
-				Move playermove = players[curplayer]->getMove(board->listMoves(players[curplayer]->getColor()));
+				Move playermove = players[curplayer]->getMove(moves);
+				std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
 				valid_move = board->checkMove(playermove);
+				std::cout << "valid: " << valid_move << std::endl;
 
 				//temporary
 				std::vector<std::vector<char>> b = board->getState();
 				for (size_t i = 0; i < b.size(); ++i) {
 					for (size_t j = 0; j < b[i].size(); ++j) {
-						std::cout << b[i][j] << std::endl;
+						std::cout << b[i][j];
 					}
 					std::cout << std::endl;
 				}
@@ -181,7 +183,7 @@ void Game::checkEnd()
 	int nextplayer = curplayer + 1;
 	if (nextplayer >= numplayers)
 	{
-		nextplayer -= 0;
+		nextplayer = 0;
 	}
 
 	int state = board->checkmate(players[nextplayer]->getColor());

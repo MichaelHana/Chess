@@ -3,9 +3,9 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include "piece.h"
 
 struct Move;
-class Piece;
 
 class Board {
 	int row, col;
