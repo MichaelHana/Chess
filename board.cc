@@ -96,7 +96,7 @@ bool Board::check(int king_color) {
 	int king_x = 0;
 	int king_y = 0;
 	for (int y = 0; y < pieces.size(); ++y) {
-		for (int x = 0; x < pieces[i].size(); ++x) {
+		for (int x = 0; x < pieces[y].size(); ++x) {
 			Piece *king = dynamic_cast<King*>(pieces[y][x].get());
 			if (king && pieces[y][x]->getColor() == king_color) {//piece is a king and matches the color of the moving piece
 				king_x = x;
@@ -109,7 +109,7 @@ bool Board::check(int king_color) {
 	bool king_in_check = false;
 
 	for (int y = 0; y < pieces.size(); ++y) {
-		for (int x = 0; x < pieces[i].size(); ++x) {
+		for (int x = 0; x < pieces[y].size(); ++x) {
 			if (pieces[y][x] && pieces[y][x]->getColor() != pieces[king_y][king_x]->getColor()) {//piece is valid and color is opposite of the king's color
 				std::pair<int, int> start_check = std::make_pair( x, y );
 				std::pair<int, int> end_check = std::make_pair( king_x, king_y );
@@ -158,10 +158,10 @@ std::vector<Move> Board::listMoves(int color) {
 	}
 
 	//loop through all pieces and through all squares and check for valid move
-	for (size_t i = 0; i < row; ++i) {
-		for (size_t j = 0; j < col; ++j) {
-			for (size_t y = 0; y < row; ++y) {
-				for (size_t x = 0; x < col; ++x) {
+	for (size_t i = 0; i < pieces.size(); ++i) {
+		for (size_t j = 0; j < pieces[i].size(); ++j) {
+			for (size_t y = 0; y < board.size(); ++y) {
+				for (size_t x = 0; x < board[y].size(); ++x) {
 					if (pieces[j][i]) {
 						std::pair<int, int> start = std::make_pair( j, i );
 						std::pair<int, int> end = std::make_pair( x, y );

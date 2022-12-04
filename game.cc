@@ -26,13 +26,14 @@ void Game::play()
 {
 	// This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
 	// Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
-#if
+
 	std::string command;
 	while (std::cin >> command)
 	{
 		if (command == "game")
 		{
 			game_running = true;
+			start = {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
 			board = std::make_unique<Board>(rows, cols, start);
 			for (int i = 0; i < numplayers; ++i)
 			{
@@ -94,11 +95,20 @@ void Game::play()
 				continue;
 			}
 			int curplayer = turn % numplayers;
-			Move playermove = players[curplayer]->getMove(board->listMoves(players[curplayer]->getColor()));
-			board->checkMove(playermove);
-			updateViewers();
-			checkEnd();
-			turn++;
+			std::vector<Move> moves = board->listMoves(players[curplayer]->getColor());
+			bool valid_move = false;
+
+			if (moves.size() > 0) {
+				Move playermove = players[curplayer]->getMove(board->listMoves(players[curplayer]->getColor()));
+				valid_move = board->checkMove(playermove);
+			}
+			//updateViewers();
+			if (valid_move) {
+				checkEnd();
+				turn++;
+			} else {
+				std::cout << "Invalid move. Please enter a valid move" << std::endl;
+			}
 		}
 		/*else if (command == "setup")
 		{
@@ -116,7 +126,6 @@ void Game::play()
 	}
 	// print final score, white wins and black wins
 	// delete stuff? Or will it all be deleted in destructor?
-#endif
 }
 /*void Game::setup()
 {
@@ -151,7 +160,6 @@ void Game::play()
 }*/
 void Game::checkEnd()
 {
-#if
 	bool end = false;
 	int curplayer = turn % numplayers;
 	int nextplayer = curplayer + 1;
@@ -165,6 +173,11 @@ void Game::checkEnd()
 	{
 		end = true;
 		wins[curplayer]++;
+		if (curplayer == 0) {
+			std::cout << "White wins!" << std::endl;
+		} else {
+			std::cout << "Black wins!" << std::endl;
+		}
 	}
 	else if (state == 2)
 	{ // stalemate
@@ -173,6 +186,7 @@ void Game::checkEnd()
 		{
 			wins[j] += 0.5;
 		}
+		std::cout << "Tie." << std::endl;
 	}
 
 	if (end)
@@ -181,6 +195,5 @@ void Game::checkEnd()
 	}
 	// do we need to account for insufficient material end case?????????
 	// do we need to add in 50-move rule or agreement or repetition?????
-#endif
 }
 Game::~Game() {}
