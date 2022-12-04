@@ -9,7 +9,7 @@ bool Rook::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 	// assumed that board checks move is in bounds
 
 	// check move distance
-	if (start.first - end.first != 0 && start.second - end.second != 0 || start == end) {
+	if ((start.first - end.first != 0 && start.second - end.second != 0) || start == end) {
 		return false;
 	}
 	// check if blocked by piece before end

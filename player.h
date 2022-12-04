@@ -11,6 +11,7 @@ class Player {
 		Player(int color);
 		int getColor();
 		virtual Move getMove(std::vector<Move> moves) = 0;
+		virtual ~Player() = default;
 };
 
 #endif
