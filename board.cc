@@ -68,7 +68,7 @@ Board::Board(int row, int col, std::vector<std::vector<char>> board) : row{ row 
 	}
 }
 
-bool Board::checkMove(Move m) {
+bool Board::checkMove(Move m, bool onlyTesting) {
 	int pieces_size = static_cast<int>(pieces.size());
 	if (m.start.second < pieces_size && m.end.second < pieces_size) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
@@ -109,9 +109,16 @@ bool Board::checkMove(Move m) {
 				std::cout << "here4" << std::endl;
 				return false;
 			}
-			std::cout << "here5" << std::endl;
-			board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
-			board[m.start.second][m.start.first] = ' ';
+			if (!onlyTesting) {
+				// update board and commit to move
+				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
+				board[m.start.second][m.start.first] = ' ';
+				pieces[m.end.second][m.end.first]->setMoved();
+			} else {
+				//undo the move
+				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
+				pieces[m.end.second][m.end.first] = std::move(captured_piece);
+			}
 			return true;
 		}
 		return false;
@@ -146,22 +153,19 @@ bool Board::check(int king_color) {
 		}
 	}
 
-	bool king_in_check = false;
-
 	for (int y = 0; y < static_cast<int>(pieces.size()); ++y) {
 		for (int x = 0; x < static_cast<int>(pieces[y].size()); ++x) {
 			if (pieces[y][x] && pieces[y][x]->getColor() != pieces[king_y][king_x]->getColor()) {//piece is valid and color is opposite of the king's color
 				std::pair<int, int> start_check = std::make_pair( x, y );
 				std::pair<int, int> end_check = std::make_pair( king_x, king_y );
 				if (pieces[y][x] && pieces[y][x]->validMove(this, start_check, end_check)) {
-					king_in_check = true;
-					break;
+					return true;
 				}
 			}
 		}
 	}
 
-	return king_in_check;
+	return false;
 }
 
 int Board::checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate, 2 = stalemate
@@ -172,7 +176,7 @@ int Board::checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate
 				for (size_t x = 0; x < board[y].size(); ++x) {
 					std::pair<int, int> start = std::make_pair( j, i );
 					std::pair<int, int> end = std::make_pair( x, y );
-					if (pieces[i][j].get() && pieces[i][j]->getColor() == color && pieces[i][j]->validMove(this, start, end)) {
+					if (pieces[i][j].get() && pieces[i][j]->getColor() == color && checkMove({start, end, false, false, false}, true)) {
 						valid_moves = true;
 						break;
 					}
@@ -207,7 +211,7 @@ std::vector<Move> Board::listMoves(int color) {
 						std::pair<int, int> end = std::make_pair( x, y );
 						//std::cout << " listMoves: endx: " << end.first << " endy: " << end.second << std::endl;
 						//std::cout << " listmoves startx: " << j << " starty: " << i << std::endl;
-						if (pieces[i][j]->validMove(this, start, end) && pieces[i][j]->getColor() == color) {
+						if (checkMove({start, end, false, false, false}, true) && pieces[i][j]->getColor() == color) {
 							//std::cout << " valid " << std::endl;
 							//std::cout << "valid " << std::endl;
 							//std::cout << " listmoves startx: " << j << " starty: " << i << std::endl;
@@ -218,21 +222,7 @@ std::vector<Move> Board::listMoves(int color) {
 							if (pieces[end.second][end.first]) {
 								is_capture = true;
 								captured_piece = std::move(pieces[end.second][end.first]);
-							}
-
-							//make the move
-							pieces[end.second][end.first] = std::move(pieces[i][j]);
-							pieces[i][j].reset();
-				
-							// break if move makes you in check
-							if (check(pieces[end.second][end.first]->getColor())) {
-								pieces[i][j] = std::move(pieces[end.second][end.first]);
-								pieces[end.second][end.first] = std::move(captured_piece);
-								break;
-							}
-							
-							pieces[i][j] = std::move(pieces[end.second][end.first]);
-							pieces[end.second][end.first] = std::move(captured_piece);		
+							}	
 
 							is_check = check(opposite_color);//checking opposite colour piece
 							if (checkmate(opposite_color) == 1) {
