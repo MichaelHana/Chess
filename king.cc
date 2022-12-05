@@ -10,7 +10,9 @@ bool King::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 	// todo: castling
 
 	// check move distance
-	if ((abs(start.first - end.first) != 1 || abs(start.second - end.second) != 1) || start == end) {
+	int x = abs(start.first - end.first);
+	int y = abs(start.second - end.second);
+	if ((x != 1 && x != 0) || (y != 1 && y != 0) || start == end) {
 		return false;
 	}
 	// check if blocked by friendly piece
