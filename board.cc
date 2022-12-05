@@ -152,10 +152,11 @@ bool Board::check(int king_color) {
 
 	for (int y = 0; y < static_cast<int>(pieces.size()); ++y) {
 		for (int x = 0; x < static_cast<int>(pieces[y].size()); ++x) {
-			if (pieces[y][x] && pieces[y][x]->getColor() != pieces[king_y][king_x]->getColor()) {//piece is valid and color is opposite of the king's color
+			if (pieces[y][x] && pieces[y][x]->getColor() != king_color) {//piece is valid and color is opposite of the king's color
 				std::pair<int, int> start_check = std::make_pair( x, y );
 				std::pair<int, int> end_check = std::make_pair( king_x, king_y );
 				if (pieces[y][x] && pieces[y][x]->validMove(this, start_check, end_check)) {
+					std::cout << "startx: " << start_check.first << "starty: " << start_check.second << std::endl;
 					return true;
 				}
 			}
@@ -214,11 +215,9 @@ std::vector<Move> Board::listMoves(int color) {
 							//std::cout << " listmoves startx: " << j << " starty: " << i << std::endl;
 							
 							bool is_capture = false, is_check = false, is_checkmate = false;
-							std::unique_ptr<Piece> captured_piece;
 							
 							if (pieces[end.second][end.first]) {
 								is_capture = true;
-								captured_piece = std::move(pieces[end.second][end.first]);
 							}	
 
 							is_check = check(opposite_color);//checking opposite colour piece

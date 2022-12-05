@@ -17,6 +17,7 @@
 void Game::updateViewers()
 {
 	//temporary
+	std::cout << "========" << std::endl;
 	std::vector<std::vector<char>> b = board->getState();
 	for (size_t i = 0; i < b.size(); ++i) {
 		for (size_t j = 0; j < b[i].size(); ++j) {
@@ -24,6 +25,7 @@ void Game::updateViewers()
 		}
 		std::cout << std::endl;
 	}
+	std::cout << "========" << std::endl;
 
 	/*std::vector<std::vector<char>> cur = board->getState(); //had cur[rows][cols]
 	for (auto viewer = viewers.begin(); viewer != viewers.end(); ++viewer) {
@@ -120,7 +122,7 @@ void Game::play()
 
 			if (moves.size() > 0) {
 				Move playermove = players[curplayer]->getMove(moves);
-//				std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
+				std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
 				valid_move = board->checkMove(playermove);
 				updateViewers();
 			}
