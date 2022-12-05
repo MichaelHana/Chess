@@ -133,7 +133,7 @@ void Game::play()
 			if (moves.size() > 0) {
 				Move playermove = players[curplayer]->getMove(moves);
 				//std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
-				valid_move = board->checkMove(playermove);
+				valid_move = board->checkMove(playermove, curplayer);
 				updateViewers();
 			}
 

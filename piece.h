@@ -12,6 +12,7 @@ public:
 	Piece(int color);
 	int getColor();
 	void setMoved();
+	bool getMoved();
 	virtual bool validMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) = 0;
 	virtual ~Piece() = default;
 };

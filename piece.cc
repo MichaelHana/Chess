@@ -9,3 +9,7 @@ int Piece::getColor() {
 void Piece::setMoved() {
 	moved = true;
 }
+
+bool Piece::getMoved() {
+	return moved;
+}
