@@ -68,7 +68,7 @@ Board::Board(int row, int col, std::vector<std::vector<char>> board) : row{ row 
 	}
 }
 
-bool Board::checkMove(Move m, bool onlyTesting = false) {
+bool Board::checkMove(Move m, bool onlyTesting) {
 	int pieces_size = static_cast<int>(pieces.size());
 	if (m.start.second < pieces_size && m.end.second < pieces_size) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
@@ -108,7 +108,7 @@ bool Board::checkMove(Move m, bool onlyTesting = false) {
 				// update board and commit to move
 				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
 				board[m.start.second][m.start.first] = ' ';
-				pieces[m.end.second][m.end.first]->setMoved(true);
+				pieces[m.end.second][m.end.first]->setMoved();
 			} else {
 				//undo the move
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
