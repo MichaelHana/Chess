@@ -49,14 +49,10 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
 				curboard[i][j] = board[i][j];
                                 std::string s (1, curboard[i][j]);
 
-				if (last_x_start >= 0 && last_x_end >= 0 && changed_tile <= 2) {
-					xw->fillRectangle(j * 100, i * 100, 100, 100, Xwindow::Blue);
+				if ((i + j) % 2) {
+					xw->fillRectangle(j * 100, i * 100, 100, 100, Xwindow::Red);
 				} else {
-					if ((i + j) % 2) {
-						xw->fillRectangle(j * 100, i * 100, 100, 100, Xwindow::Red);
-					} else {
-						xw->fillRectangle(j * 100, i * 100, 100, 100, Xwindow::White);
-					}
+					xw->fillRectangle(j * 100, i * 100, 100, 100, Xwindow::White);
 				}
 
 				if (start_changed) {
@@ -86,6 +82,18 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
 	last_y_start = start_y;
 	last_x_end = end_x;
 	last_y_end = end_y;
+	
+	if (changed_tile <= 2 && changed_tile > 0 && start_x >= 0 && start_y >= 0) {
+		std::string s1(1, curboard[start_y][start_x]);
+		xw->fillRectangle(start_x * 100, start_y * 100, 100, 100, Xwindow::Blue);
+		xw->drawString(start_x * 100 + 50, start_y * 100 + 50, s1);
+
+		if (changed_tile == 2 && end_x >= 0 && end_y >= 0) {
+			std::string s2(1, curboard[end_y][end_y]);
+			xw->fillRectangle(end_x * 100, end_y * 100, 100, 100, Xwindow::Blue);
+			xw->drawString(end_y * 100 + 50, end_y * 100 + 50, s2);
+		}
+	}
 }
 
 Graphics::~Graphics() {}

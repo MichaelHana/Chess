@@ -68,27 +68,11 @@ Board::Board(int row, int col, std::vector<std::vector<char>> board) : row{ row 
 	}
 }
 
-bool Board::checkMove(Move m, bool onlyTesting) {
+bool Board::checkMove(Move m, bool onlyTesting, bool *check_move, bool *checkmate_move) {
 	int pieces_size = static_cast<int>(pieces.size());
 	if (m.start.second < pieces_size && m.end.second < pieces_size) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
 		int pieces_end_size = static_cast<int>(pieces[m.end.second].size());
-		/*std::cout << "here0" << std::endl;
-		std::cout << "pieces_start_size" << pieces_start_size << std::endl;
-		std::cout << "pieces_end_size" << pieces_end_size << std::endl;
-		std::cout << "m.satrt.first: " << m.start.first << std::endl;
-		std::cout << "m.start.second:  " << m.start.second << std::endl;
-		std::cout << "m.end.first: " << m.end.first << std::endl;
-		std::cout << "m.end.second: " << m.end.second << std::endl;
-		if (pieces[m.start.second][m.start.first].get()) {
-			std::cout << "1 works" << std::endl;
-		
-			std::cout << m.start.first << m.start.second << m.end.first << m.end.second << std::endl;
-			if (pieces[m.start.second][m.start.first]->validMove(this, m.start, m.end)) {
-				std::cout << "2 works" << std::endl;
-			}
-		}*/
-
 		if (m.start.first >= 0 && m.start.second >= 0  && m.start.first < pieces_start_size && m.end.first >= 0 && m.end.second >= 0 && m.end.first < pieces_end_size && pieces[m.start.second][m.start.first] && pieces[m.start.second][m.start.first]->validMove(this, m.start, m.end)) {//check if piece can move there
 			std::unique_ptr<Piece> captured_piece;
 			
@@ -106,6 +90,25 @@ bool Board::checkMove(Move m, bool onlyTesting) {
 				pieces[m.end.second][m.end.first] = std::move(captured_piece);
 				return false;
 			}
+
+			//return if move is a check or checkmate
+			int opposite_color = 0;
+			if (pieces[m.end.second][m.end.first]->getColor() == 0) {
+				opposite_color = 1;
+			}
+
+			if (check_move) {
+				if (check(opposite_color)) {
+					*check_move = true;
+				}
+			}
+
+			if (checkmate_move) {
+				if (checkmate(opposite_color)) {
+					*checkmate_move = true;
+				}
+			}
+
 			if (!onlyTesting) {
 				// update board and commit to move
 				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
@@ -167,25 +170,28 @@ bool Board::check(int king_color) {
 
 int Board::checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate, 2 = stalemate
 	bool valid_moves = false;
+	int piece_count = 0;
 	for (size_t i = 0; i < pieces.size(); ++i) {
 		for (size_t j = 0; j < pieces[i].size(); ++j) {
-			for (size_t y = 0; y < board.size(); ++y) {
-				for (size_t x = 0; x < board[y].size(); ++x) {
-					std::pair<int, int> start = std::make_pair( j, i );
-					std::pair<int, int> end = std::make_pair( x, y );
-					if (pieces[i][j].get() && pieces[i][j]->getColor() == color && checkMove({start, end, false, false, false}, true)) {
-						valid_moves = true;
-						break;
+			if (pieces[i][j].get()) {
+				++piece_count;
+				for (size_t y = 0; y < board.size(); ++y) {
+					for (size_t x = 0; x < board[y].size(); ++x) {
+						std::pair<int, int> start = std::make_pair( j, i );
+						std::pair<int, int> end = std::make_pair( x, y );
+					       	if (pieces[i][j]->getColor() == color && checkMove({start, end, false, false, false}, true)) {
+							valid_moves = true;
+							break;
+						}
 					}
 				}
 			}
 		}
 	}
-
 	if (!valid_moves && check(color)) {
 		return 1; // checkmate
 	}
-	else if (!valid_moves && !check(color)) {
+	else if ((!valid_moves && !check(color)) || piece_count <= 2) {
 		return 2; // stalemate
 	}
 	return 0; // game not ended
@@ -206,23 +212,11 @@ std::vector<Move> Board::listMoves(int color) {
 					if (pieces[i][j]) {
 						std::pair<int, int> start = std::make_pair( j, i );
 						std::pair<int, int> end = std::make_pair( x, y );
-						//std::cout << " listMoves: endx: " << end.first << " endy: " << end.second << std::endl;
-						//std::cout << " listmoves startx: " << j << " starty: " << i << std::endl;
-						if (checkMove({start, end, false, false, false}, true) && pieces[i][j]->getColor() == color) {
-							//std::cout << " valid " << std::endl;
-							//std::cout << "valid " << std::endl;
-							//std::cout << " listmoves startx: " << j << " starty: " << i << std::endl;
-							
-							bool is_capture = false, is_check = false, is_checkmate = false;
-							
+						bool is_capture = false, is_check = false, is_checkmate = false;
+						if (checkMove({start, end, false, false, false}, true, &is_check, &is_checkmate) && pieces[i][j]->getColor() == color) {
 							if (pieces[end.second][end.first]) {
 								is_capture = true;
 							}	
-
-							is_check = check(opposite_color);//checking opposite colour piece
-							if (checkmate(opposite_color) == 1) {
-								is_checkmate = true;
-							}
 
 							Move m { start, end, is_capture, is_check, is_checkmate };
 							moves.emplace_back(m);

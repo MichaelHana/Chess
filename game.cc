@@ -44,11 +44,23 @@ void Game::play()
 	board = std::make_unique<Board>(rows, cols, start);
 
 	std::string command;
+
+	viewers.emplace_back(std::make_unique<Text>(std::cout));
+	viewers.emplace_back(std::make_unique<Graphics>());
+	updateViewers();
+
 	while (std::cin >> command)
 	{
 		if (command == "game")
 		{
+			if (game_running) {
+				std::cout << "there is already a game running" << std::endl;
+				continue;
+			}
+
 			game_running = true;
+
+			board = std::make_unique<Board>(rows, cols, start);
 
 			for (int i = 0; i < numplayers; ++i)
 			{
@@ -81,10 +93,6 @@ void Game::play()
 					break; // break to reset input
 				}
 			}
-			viewers.emplace_back(std::make_unique<Text>(std::cout));
-			viewers.emplace_back(std::make_unique<Graphics>());
-			updateViewers();
-
 		}
 		else if (command == "resign")
 		{ // this would need to change if >2 players- basically just check turn mod numplayers
@@ -229,6 +237,7 @@ void Game::setup() {
 			// should maybe change order of players in players until the one we want is first? (can get front element (vector< >::front(players), emplace on back and then use erase??)
 		} else if (command == "done") {
 			if (board->setupReady()) {
+				start = board->getState();
 				return;
 			} else {
 				std::cout << "You cannot leave setup mode until there are no pawns on the first and last rows, there are only 2 kings, and neither king is in check." << std::endl;
@@ -274,8 +283,11 @@ void Game::checkEnd() {
 	}
 
 	if (end)
-	{
+	{	
+		turn = 0;
 		game_running = false;
+		start = {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
+
 	}
 	// do we need to account for insufficient material end case?????????
 	// do we need to add in 50-move rule or agreement or repetition?????

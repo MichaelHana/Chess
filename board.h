@@ -13,7 +13,7 @@ class Board {
 	std::vector<std::vector<char>> board;
 	public:
 		Board(int row, int col, std::vector<std::vector<char>> board);
-		bool checkMove(Move m, bool onlyTesting = false);
+		bool checkMove(Move m, bool onlyTesting = false, bool *check_move = nullptr, bool *checkmate_move = nullptr);
 		std::vector<std::vector<char>> getState();
 		Piece* getPiece(std::pair<int, int> coords);
 		bool check(int king_color);

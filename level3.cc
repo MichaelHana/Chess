@@ -1,11 +1,14 @@
 #include <cstdlib>
 #include <vector>
+#include <ctime>
 #include "level3.h"
 #include "move.h"
 
 Level3::Level3(int color) : Computer{ color } {};
 
 Move Level3::getMove(std::vector<Move> moves) {
+	srand(time(nullptr));
+	
 	std::vector<Move> filter;
 
 	for (auto i : moves) {
