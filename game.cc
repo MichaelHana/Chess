@@ -7,7 +7,7 @@
 #include "level3.h"
 // include "level4.h"
 #include "text.h"
-// include "graphics.h"
+#include "graphics.h"
 #include "move.h"
 #include <string>
 #include <iostream>
@@ -16,8 +16,9 @@
 
 void Game::updateViewers()
 {
+	
 	//temporary
-	std::cout << "========" << std::endl;
+	/*std::cout << "========" << std::endl;
 	std::vector<std::vector<char>> b = board->getState();
 	for (size_t i = 0; i < b.size(); ++i) {
 		for (size_t j = 0; j < b[i].size(); ++j) {
@@ -25,12 +26,13 @@ void Game::updateViewers()
 		}
 		std::cout << std::endl;
 	}
-	std::cout << "========" << std::endl;
+	std::cout << "========" << std::endl;*/
 
-	/*std::vector<std::vector<char>> cur = board->getState(); //had cur[rows][cols]
+
+	std::vector<std::vector<char>> cur = board->getState(); //had cur[rows][cols]
 	for (auto viewer = viewers.begin(); viewer != viewers.end(); ++viewer) {
 		viewer->get()->update(cur);
-	}*/
+	}
 }
 
 void Game::play()
@@ -79,8 +81,8 @@ void Game::play()
 					break; // break to reset input
 				}
 			}
-			//viewers.emplace_back(std::make_unique<Text>(std::cout));
-			// viewers.emplace_back(graphic);
+			viewers.emplace_back(std::make_unique<Text>(std::cout));
+			viewers.emplace_back(std::make_unique<Graphics>());
 			updateViewers();
 
 		}
