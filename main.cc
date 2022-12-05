@@ -3,6 +3,6 @@
 #include "game.h"
 
 int main() {
-	Game *game = new Game();
+	std::unique_ptr<Game> game = std::make_unique<Game>();
 	game->play();
 }
