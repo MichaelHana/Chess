@@ -5,6 +5,7 @@
 class Computer: public Player {
 	public:
 		Computer(int color);
+		virtual ~Computer() = default;
 };
 
 #endif
