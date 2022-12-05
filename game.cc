@@ -157,8 +157,8 @@ void Game::play()
 	}
 	// print final score, white wins and black wins
 	std::cout << "Final Score:" << std::endl;
-	std::cout << "White: " << wins[0];
-	std::cout << "Black: " << wins[1];
+	std::cout << "White: " << wins[0] << std::endl;
+	std::cout << "Black: " << wins[1] << std::endl;
 }
 
 void Game::setup() {
