@@ -74,7 +74,7 @@ bool Board::checkMove(Move m, bool onlyTesting) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
 		int pieces_end_size = static_cast<int>(pieces[m.end.second].size());
 		/*std::cout << "here0" << std::endl;
-		/*std::cout << "pieces_start_size" << pieces_start_size << std::endl;
+		std::cout << "pieces_start_size" << pieces_start_size << std::endl;
 		std::cout << "pieces_end_size" << pieces_end_size << std::endl;
 		std::cout << "m.satrt.first: " << m.start.first << std::endl;
 		std::cout << "m.start.second:  " << m.start.second << std::endl;
@@ -237,5 +237,95 @@ std::vector<Move> Board::listMoves(int color) {
 
 	return moves;
 }
+
+void Board::place(char piece, std::pair<int, int> coord) {
+	if (coord.first >= 0 && coord.second >= 0 && coord.second < static_cast<int>(pieces.size()) && coord.first < static_cast<int>(pieces[coord.second].size())) {
+		if (pieces[coord.second][coord.first]) {
+			std::cout << "You cannot place a piece there." << std::endl;
+		} else {
+			if (piece >= 'a' && piece <= 'z') {
+				if (piece == 'p') {
+					pieces[coord.second][coord.first] = std::make_unique<Pawn>(1); // black
+				}
+				else if (piece == 'r') {
+					pieces[coord.second][coord.first] = std::make_unique<Rook>(1);
+				}
+				else if (piece == 'n') {
+					pieces[coord.second][coord.first] = std::make_unique<Knight>(1);
+				}
+				else if (piece == 'b') {
+					pieces[coord.second][coord.first] = std::make_unique<Bishop>(1);
+				}
+				else if (piece == 'q') {
+					pieces[coord.second][coord.first] = std::make_unique<Queen>(1);
+				}
+				else if (piece == 'k') {
+					pieces[coord.second][coord.first] = std::make_unique<King>(1);
+				}
+			}
+
+			else if (piece >= 'A' && piece <= 'Z') {
+				if (piece == 'P') {
+					pieces[coord.second][coord.first] = std::make_unique<Pawn>(0); // white
+				}
+				else if (piece == 'R') {
+					pieces[coord.second][coord.first] = std::make_unique<Rook>(0);
+				}
+				else if (piece == 'N') {
+					pieces[coord.second][coord.first] = std::make_unique<Knight>(0);
+				}
+				else if (piece == 'B') {
+					pieces[coord.second][coord.first] = std::make_unique<Bishop>(0);
+				}
+				else if (piece == 'Q') {
+					pieces[coord.second][coord.first] = std::make_unique<Queen>(0);
+				}
+				else if (piece == 'K') {
+					pieces[coord.second][coord.first] = std::make_unique<King>(0);
+				}
+			}
+			board[coord.second][coord.first] = piece;
+		}
+	} else {
+		std::string error = "Invalid coordinate.";
+		throw (error);
+	}
+}
+
+void Board::remove(std::pair<int, int> coord){
+	if (coord.first >= 0 && coord.second >= 0 && coord.second < static_cast<int>(pieces.size()) && coord.first < static_cast<int>(pieces[coord.second].size())) {
+		pieces[coord.second][coord.first].reset();
+		board[coord.second][coord.first] = ' ';
+	} else {
+		std::string error = "Invalid coordinate.";
+		throw (error);
+	}
+}
+
+bool Board::setupReady() {
+	int king_count = 0;
+	bool white_king = false, black_king = false;
+	for (size_t i = 0; i < pieces.size(); ++i) {
+		for (size_t j = 0; j < pieces[i].size(); ++j) {
+			if (dynamic_cast<King *>(pieces[i][j].get())) {
+				++king_count;
+				if (king_count > 2) {
+					return false;
+				}
+				if (pieces[i][j]->getColor() == 0) {
+					white_king = true;
+				} else if (pieces[i][j]->getColor() == 1) {
+					black_king = true;
+				}
+			} else if (dynamic_cast<Pawn *>(pieces[i][j].get())) {
+				if (i == 0 || i == 7) {
+					return false;
+				}
+			}
+		}
+	}
+	return white_king && black_king && !check(0) && !check(1);
+}
+
 
 Board::~Board() {}

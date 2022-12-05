@@ -16,10 +16,19 @@
 
 void Game::updateViewers()
 {
-	std::vector<std::vector<char>> cur = board->getState(); //had cur[rows][cols]
+	//temporary
+	std::vector<std::vector<char>> b = board->getState();
+	for (size_t i = 0; i < b.size(); ++i) {
+		for (size_t j = 0; j < b[i].size(); ++j) {
+			std::cout << b[i][j];
+		}
+		std::cout << std::endl;
+	}
+
+	/*std::vector<std::vector<char>> cur = board->getState(); //had cur[rows][cols]
 	for (auto viewer = viewers.begin(); viewer != viewers.end(); ++viewer) {
 		viewer->get()->update(cur);
-	}
+	}*/
 }
 
 void Game::play()
@@ -27,14 +36,16 @@ void Game::play()
 	// This is fine - if wanted to change layout, would need to implemenet new viewer and Text constructors to take in rows and cols
 	// Graphics *graphic = new Graphic(); // This is fine - if wanted to change layout etc, would need to implement new viewer and graphics ctors, would just add parameters rows, columns, start
 
+	start = {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
+	board = std::make_unique<Board>(rows, cols, start);
+
 	std::string command;
 	while (std::cin >> command)
 	{
 		if (command == "game")
 		{
 			game_running = true;
-			start = {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
-			board = std::make_unique<Board>(rows, cols, start);
+
 			for (int i = 0; i < numplayers; ++i)
 			{
 				std::string player;
@@ -68,6 +79,8 @@ void Game::play()
 			}
 			//viewers.emplace_back(std::make_unique<Text>(std::cout));
 			// viewers.emplace_back(graphic);
+			updateViewers();
+
 		}
 		else if (command == "resign")
 		{ // this would need to change if >2 players- basically just check turn mod numplayers
@@ -109,17 +122,9 @@ void Game::play()
 				Move playermove = players[curplayer]->getMove(moves);
 //				std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
 				valid_move = board->checkMove(playermove);
-
-				//temporary
-				std::vector<std::vector<char>> b = board->getState();
-				for (size_t i = 0; i < b.size(); ++i) {
-					for (size_t j = 0; j < b[i].size(); ++j) {
-						std::cout << b[i][j];
-					}
-					std::cout << std::endl;
-				}
+				updateViewers();
 			}
-			//updateViewers();
+
 			if (valid_move) {
 				checkEnd();
 				turn++;
@@ -127,15 +132,12 @@ void Game::play()
 				std::cout << "Invalid move. Please enter a valid move" << std::endl;
 			}
 		}
-		/*else if (command == "setup")
+
+
+		else if (command == "setup")
 		{
-			if (!board)
-			{
-				std::cout << "The game has ended. Please start a new game before setting up." << std::endl;
-				continue;
-			}
 			setup();
-		}*/
+		}
 		else
 		{
 			std::cout << command << " is not a valid command" << std::endl;
@@ -144,39 +146,100 @@ void Game::play()
 	// print final score, white wins and black wins
 	// delete stuff? Or will it all be deleted in destructor?
 }
-/*void Game::setup()
-{
-	std::string command;
-	if (command == "+")
-	{
-		char K;
-		std::string e1;
-		std::cin >> K >> e1;
-		board->place(K, e1); //!!!!! may need new method here?? - adding new piece
-	} else if (command == "-") {
-		std::string e1;
-		std::cin >> e1;
-		board->remove(e1); //!!!!!!!!!!!! may need new method here?????
-	} else if (command == "=") {
-		std::string colour;
-		std::cin >> colour;
-		// !!!!!!!!!!!!!!!!!!!
-		// should switch around order of wins as well
-		// should maybe change order of players in players until the one we want is first? (can get front element (vector< >::front(players), emplace on back and then use erase??)
-	} else if (command == "done") {
-		if (board->doneSetUp())
-		{ // need new method here??? - to check if conditions met
-			return;
+
+void Game::setup() {
+	//creating empty board
+	std::vector<std::vector<char>> empty_board; 
+	for (int i = 0; i < rows; ++i) {
+		std::vector<char> board_row;
+		for (int j = 0; j < cols; ++j) {
+			board_row.emplace_back(' ');
 		}
-	// check if board contains exactly one white king and one black king, no pawns are on the first or last row of the board, and neither king is in check - O.W. shouldn't leave setup mode, should output message to user
-	// if the conditions are met, should return to game setup, having made changes to board
-	} else {
-		std::cout
-			<< command << " is not a valid command, please enter one of [+ K e1], [- e1], [= colour] or [done]" << std::endl;
+		empty_board.emplace_back(board_row);
 	}
-}*/
-void Game::checkEnd()
-{
+			
+	board = std::make_unique<Board>(rows, cols, empty_board);
+
+	updateViewers();
+
+	std::string command;
+	while (std::cin >> command) {
+		if (command == "+")
+		{
+			char c;
+			std::string coord;
+			std::cin >> c >> coord;
+			
+			//if not valid coord
+			if (coord.size() != 2) {
+				std::cout << "Invalid Coordinate." << std::endl;
+				continue;
+			}
+
+			//convert coord to pair
+			std::pair<int, int> coord_pair = std::make_pair(coord[0] - 'a', 8 - (coord[1] - '0'));
+			try {
+				board->place(c, coord_pair); //!!!!! may need new method here?? - adding new piece
+			} catch (std::string e) {
+				std::cout << e << std::endl;
+			}
+		} else if (command == "-") {
+			std::string coord;
+			std::cin >> coord;
+
+			//if not valid coord
+			if (coord.size() != 2) {
+				std::cout << "Invalid Coordinate." << std::endl;
+				continue;
+			}
+			
+			//convert coord to pair
+			std::pair<int, int> coord_pair = std::make_pair(coord[0] - 'a', 8 - (coord[1] - '0'));
+			try {
+				board->remove(coord_pair); //!!!!!!!!!!!! may need new method here?????
+			} catch (std::string e) {
+				std::cout << e << std::endl;
+			}
+		} else if (command == "=") {
+			std::string color;
+			std::cin >> color;
+
+			//convert string to lowercase
+			int size = static_cast<int>(color.size());
+			for (int i = 0; i < size; ++i) {
+				if (color[i] >= 'A' && color[i] <= 'Z') {
+					color[i] += 'a' - 'A';
+				}
+			}
+
+			if (color == "white") {
+				turn = 0;
+			} else if (color == "black") {
+				turn = 1;
+			} else {
+				std::cout << "Invalid Color." << std::endl;
+				continue;
+			}
+			// !!!!!!!!!!!!!!!!!!!
+			// should switch around order of wins as well
+			// should maybe change order of players in players until the one we want is first? (can get front element (vector< >::front(players), emplace on back and then use erase??)
+		} else if (command == "done") {
+			if (board->setupReady()) {
+				return;
+			} else {
+				std::cout << "You cannot leave setup mode until there are no pawns on the first and last rows, there are only 2 kings, and neither king is in check." << std::endl;
+			}
+// check if board contains exactly one white king and one black king, no pawns are on the first or last row of the board, and neither king is in check - O.W. shouldn't leave setup mode, should output message to user
+		// if the conditions are met, should return to game setup, having made changes to board
+		} else {
+			std::cout << command << " is not a valid command, please enter one of [+ K e1], [- e1], [= colour] or [done]" << std::endl;
+		}
+
+		updateViewers();
+	}
+}
+
+void Game::checkEnd() {
 	bool end = false;
 	int curplayer = turn % numplayers;
 	int nextplayer = curplayer + 1;
