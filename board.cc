@@ -156,7 +156,6 @@ bool Board::check(int king_color) {
 				std::pair<int, int> start_check = std::make_pair( x, y );
 				std::pair<int, int> end_check = std::make_pair( king_x, king_y );
 				if (pieces[y][x] && pieces[y][x]->validMove(this, start_check, end_check)) {
-					std::cout << "startx: " << start_check.first << "starty: " << start_check.second << std::endl;
 					return true;
 				}
 			}
