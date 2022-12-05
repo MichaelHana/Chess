@@ -19,6 +19,7 @@ class Board {
 		bool check(int king_color);
 		int checkmate(int color);
 		std::vector<Move> listMoves(int color);
+		bool promote(Move m, int color);
 		void place(char piece, std::pair<int, int> coord);
 		void remove(std::pair<int, int> coord);
 		bool setupReady();

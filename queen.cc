@@ -2,7 +2,6 @@
 #include "piece.h"
 #include "board.h"
 #include <stdlib.h>
-#include <iostream>
 
 Queen::Queen(int color) : Piece(color) {}
 
@@ -12,10 +11,8 @@ bool Queen::validMove(Board* board, std::pair<int, int> start, std::pair<int, in
 	// check move distance
 	if (start == end) {
 		return false;
-		std::cout << "start = end: " << end.first << ", " << end.second << std::endl;
 	} else if (start.first - end.first != 0 && start.second - end.second != 0) {
 		if (abs(start.first - end.first) != abs(start.second - end.second)) {
-			std::cout << "invalid direction: " << end.first << ", " << end.second << std::endl;
 			return false;
 		}
 	}
@@ -33,7 +30,6 @@ bool Queen::validMove(Board* board, std::pair<int, int> start, std::pair<int, in
 
 		if (x != start.first || y != start.second) {
 			if (board->getPiece(std::make_pair(x, y))) {
-				std::cout << "blocked by piece in middle: " << end.first << ", " << end.second << std::endl;
 				return false;
 			}
 		}
@@ -49,7 +45,6 @@ bool Queen::validMove(Board* board, std::pair<int, int> start, std::pair<int, in
 
 	// check if end blocked by friendly piece
 	if (board->getPiece(end) && board->getPiece(end)->getColor() == color) {
-		std::cout << "blocked by piece at end: " << end.first << ", " << end.second << std::endl;
 		return false;
 	}
 

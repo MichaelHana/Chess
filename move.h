@@ -11,6 +11,7 @@ struct Move {
 	bool check;
 	bool checkmate;
 	int castle; //0 = no castle, 1 = king side castle, 2 = queen side castle
+	std::pair<bool, char> promote;
 };
 
 #endif

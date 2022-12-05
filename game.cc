@@ -127,6 +127,12 @@ void Game::play()
 			if (moves.size() > 0) {
 				Move playermove = players[curplayer]->getMove(moves);
 				//std::cout << "playermove: startx: " << playermove.start.first << " start: " << playermove.start.second << " endx: " << playermove.end.first << " endy: " << playermove.end.second << std::endl;
+				//check for promotion
+				if (board->promote(playermove, curplayer)) {
+					playermove.promote.first = true;
+					char c = players[curplayer]->getPromotion();
+					playermove.promote.second = c;
+				}
 				valid_move = board->checkMove(playermove, curplayer);
 				updateViewers();
 			}

@@ -36,3 +36,9 @@ Move Human::getMove(std::vector<Move> moves) {
 	return m;
 	//return moves[i];
 }
+
+char Human::getPromotion() {
+	char c;
+	in >> c;
+	return c;
+}

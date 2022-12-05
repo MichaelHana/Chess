@@ -12,6 +12,7 @@ class Human : public Player {
 	public: 
 		Human(int color, std::istream &in);
 		Move getMove(std::vector<Move> moves);
+		char getPromotion();
 };
 
 #endif

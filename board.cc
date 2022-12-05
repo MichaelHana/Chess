@@ -128,8 +128,53 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 				pieces[m.end.second][m.end.first] = std::move(captured_piece);
 				return false;
 			}
-			
+		
+			//promotion
+			bool valid_promotion = true;	
+			if (m.promote.first == true) {
+				std::cout << m.promote.second << std::endl;
+				if (color == 0) {
+					if (m.promote.second == 'Q') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Queen>(0));
+					} else if (m.promote.second == 'N') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Knight>(0));
+					} else if (m.promote.second == 'B') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Bishop>(0));
+					} else if (m.promote.second == 'R') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Rook>(0));
+					} else {
+						valid_promotion = false;
+					}
+				}
+				else if (color == 1) {
+					if (m.promote.second == 'q') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Queen>(1));
+					} else if (m.promote.second == 'n') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Knight>(1));
+					} else if (m.promote.second == 'b') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Bishop>(1));
+					} else if (m.promote.second == 'r') {
+						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Rook>(1));
+					} else {
+						valid_promotion = false;
+					}
+				}
+
+				if (valid_promotion == false) {
+					std::cout << "Invalid Promotion." << std::endl;
+					//undo the move
+					pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
+					pieces[m.end.second][m.end.first] = std::move(captured_piece);
+					return false;
+				}
+			}
+
 			if (!onlyTesting) {
+				//update board and commit to move
+				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
+				board[m.start.second][m.start.first] = ' ';
+				pieces[m.end.second][m.end.first]->setMoved();
+
 				//move rook if castling
 				if (castle) {
 					int direction = m.end.first - m.start.first;
@@ -150,10 +195,11 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 					}
 				}
 	
-				if (pieces[m.end.second][m.end.first]) {
-					std::cout << "2" << std::endl;
+				//promotion
+				if (m.promote.first && valid_promotion) {
+					board[m.end.second][m.end.first] = m.promote.second;
 				}
-	
+
 				//return if move is a check or checkmate
 				int opposite_color = 0;
 				if (pieces[m.end.second][m.end.first]->getColor() == 0) {
@@ -171,11 +217,6 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 						*checkmate_move = true;
 					}
 				}
-				
-				//update board and commit to move
-				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
-				board[m.start.second][m.start.first] = ' ';
-				pieces[m.end.second][m.end.first]->setMoved();
 			} else {
 				//undo the move
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
@@ -261,10 +302,6 @@ int Board::checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate
 
 std::vector<Move> Board::listMoves(int color) {
 	std::vector<Move> moves;
-	int opposite_color = 0;
-	if (color == 0) {
-		opposite_color = 1;
-	}
 
 	//loop through all pieces and through all squares and check for valid move
 	for (size_t i = 0; i < pieces.size(); ++i) {
@@ -283,10 +320,6 @@ std::vector<Move> Board::listMoves(int color) {
 							}
 						}
 
-						if (dynamic_cast<Queen *>(pieces[i][j].get())) {
-							std::cout << " queen" << std::endl;
-						}
-
 						if (checkMove({start, end, false, false, false, false}, pieces[i][j]->getColor(), true, &is_check, &is_checkmate, &is_castle)) {
 							if (pieces[end.second][end.first]) {
 								is_capture = true;
@@ -302,6 +335,24 @@ std::vector<Move> Board::listMoves(int color) {
 
 	return moves;
 }
+
+bool Board::promote(Move m, int color) {
+	int pieces_size = static_cast<int>(pieces.size());
+	if (m.start.second < pieces_size && m.end.second < pieces_size) {
+		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
+		int pieces_end_size = static_cast<int>(pieces[m.end.second].size());
+		
+		if (m.start.first >= 0 && m.start.second >= 0  && m.start.first < pieces_start_size && m.end.first >= 0 && m.end.second >= 0 && m.end.first < pieces_end_size && pieces[m.start.second][m.start.first]) {//check if piece exists there
+			if (color == 0 && m.end.second == 0 && dynamic_cast<Pawn *>(pieces[m.start.second][m.start.first].get())) {
+				return true;
+			} else if (color == 1 && m.end.second == 7 && dynamic_cast<Pawn *>(pieces[m.start.second][m.start.first].get())) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+	
 
 void Board::place(char piece, std::pair<int, int> coord) {
 	if (coord.first >= 0 && coord.second >= 0 && coord.second < static_cast<int>(pieces.size()) && coord.first < static_cast<int>(pieces[coord.second].size())) {
