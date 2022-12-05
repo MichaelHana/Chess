@@ -73,26 +73,30 @@ bool Board::checkMove(Move m) {
 	if (m.start.second < pieces_size && m.end.second < pieces_size) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
 		int pieces_end_size = static_cast<int>(pieces[m.end.second].size());
-		/*std::cout << "here0" << std::endl;
-		std::cout << "pieces_start_size" << pieces_start_size << std::endl;
+		std::cout << "here0" << std::endl;
+		/*std::cout << "pieces_start_size" << pieces_start_size << std::endl;
 		std::cout << "pieces_end_size" << pieces_end_size << std::endl;
 		std::cout << "m.satrt.first: " << m.start.first << std::endl;
 		std::cout << "m.start.second:  " << m.start.second << std::endl;
 		std::cout << "m.end.first: " << m.end.first << std::endl;
 		std::cout << "m.end.second: " << m.end.second << std::endl;
-		if (pieces[m.start.second][m.start.first].get()) {
+		*/if (pieces[m.start.second][m.start.first].get()) {
 			std::cout << "1 works" << std::endl;
 		
+			std::cout << m.start.first << m.start.second << m.end.first << m.end.second << std::endl;
 			if (pieces[m.start.second][m.start.first]->validMove(this, m.start, m.end)) {
 				std::cout << "2 works" << std::endl;
 			}
-		}*/
+		}
 
 		if (m.start.first >= 0 && m.start.second >= 0  && m.start.first < pieces_start_size && m.end.first >= 0 && m.end.second >= 0 && m.end.first < pieces_end_size && pieces[m.start.second][m.start.first] && pieces[m.start.second][m.start.first]->validMove(this, m.start, m.end)) {//check if piece can move there
 			std::unique_ptr<Piece> captured_piece;
+			
+			std::cout << "here2" << std::endl;
 			//hang on to potentially captured piece
 			if (pieces[m.end.second][m.end.first].get()) {
 				captured_piece = std::move(pieces[m.end.second][m.end.first]);
+				std::cout << "here3" << std::endl;
 			}
 
 			//make the move
@@ -102,8 +106,10 @@ bool Board::checkMove(Move m) {
 			if (check(pieces[m.end.second][m.end.first]->getColor())) {
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 				pieces[m.end.second][m.end.first] = std::move(captured_piece);
+				std::cout << "here4" << std::endl;
 				return false;
 			}
+			std::cout << "here5" << std::endl;
 			board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
 			board[m.start.second][m.start.first] = ' ';
 			return true;

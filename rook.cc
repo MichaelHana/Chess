@@ -24,28 +24,28 @@ bool Rook::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 	while (x != end.first) {
 		int difference_x = end.first - start.first;
 
-		if (difference_x != 0) {
-			x += difference_x / abs(difference_x);
-		}
-
 		if (x != start.first) {
 			if (board->getPiece(std::make_pair(x, y))) {
 				return false;
 			}
+		}
+
+		if (difference_x != 0) {
+			x += difference_x / abs(difference_x);
 		}
 	}
 
 	while (y != end.second) {
 		int difference_y = end.second - start.second;
 
-		if (difference_y != 0) {
-			y += difference_y / abs(difference_y);
-		}
-
 		if (y != start.second) {
 			if (board->getPiece(std::make_pair(x, y))) {
 				return false;
 			}
+		}
+
+		if (difference_y != 0) {
+			y += difference_y / abs(difference_y);
 		}
 	}
 

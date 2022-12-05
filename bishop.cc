@@ -24,18 +24,18 @@ bool Bishop::validMove(Board* board, std::pair<int, int> start, std::pair<int, i
 		int difference_x = end.first - start.first;
 		int difference_y = end.second - start.second;
 		
+		if (x != start.first || y != start.second) {
+			if (board->getPiece(std::make_pair(x, y))) {
+				return false;
+			}
+		}
+
 		if (difference_x != 0 && x != end.first) {
 			x += difference_x / abs(difference_x);
 		}
 
 		if (difference_y != 0 && y != end.second) {
 			y += difference_y / abs(difference_y);
-		}
-
-		if (x != start.first || y != start.second) {
-			if (board->getPiece(std::make_pair(x, y))) {
-				return false;
-			}
 		}
 	}
 
