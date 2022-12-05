@@ -140,22 +140,19 @@ bool Board::check(int king_color) {
 		}
 	}
 
-	bool king_in_check = false;
-
 	for (int y = 0; y < static_cast<int>(pieces.size()); ++y) {
 		for (int x = 0; x < static_cast<int>(pieces[y].size()); ++x) {
 			if (pieces[y][x] && pieces[y][x]->getColor() != pieces[king_y][king_x]->getColor()) {//piece is valid and color is opposite of the king's color
 				std::pair<int, int> start_check = std::make_pair( x, y );
 				std::pair<int, int> end_check = std::make_pair( king_x, king_y );
 				if (pieces[y][x] && pieces[y][x]->validMove(this, start_check, end_check)) {
-					king_in_check = true;
-					break;
+					return true;
 				}
 			}
 		}
 	}
 
-	return king_in_check;
+	return false;
 }
 
 int Board::checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate, 2 = stalemate
