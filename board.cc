@@ -108,6 +108,7 @@ bool Board::checkMove(Move m, bool onlyTesting = false) {
 				// update board and commit to move
 				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
 				board[m.start.second][m.start.first] = ' ';
+				pieces[m.end.second][m.end.first]->setMoved(true);
 			} else {
 				//undo the move
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
