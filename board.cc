@@ -148,7 +148,6 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 					if (castle_move) {
 						*castle_move = true;
 					}
-					std::cout << "castle" << std::endl;
 				}
 	
 				if (pieces[m.end.second][m.end.first]) {
@@ -284,7 +283,11 @@ std::vector<Move> Board::listMoves(int color) {
 							}
 						}
 
-						if (checkMove({start, end, false, false, false, false}, pieces[i][j]->getColor(), true, &is_check, &is_checkmate, &is_castle) && pieces[i][j]->getColor() == color) {
+						if (dynamic_cast<Queen *>(pieces[i][j].get())) {
+							std::cout << " queen" << std::endl;
+						}
+
+						if (checkMove({start, end, false, false, false, false}, pieces[i][j]->getColor(), true, &is_check, &is_checkmate, &is_castle)) {
 							if (pieces[end.second][end.first]) {
 								is_capture = true;
 							}	
