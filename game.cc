@@ -259,7 +259,14 @@ void Game::checkEnd() {
 	}
 
 	int state = board->checkmate(players[nextplayer]->getColor());
-	if (state == 1) // checkmate
+	if (state == 0) {
+		if (board->check(0)) {
+			std::cout << "White is in check." << std::endl;
+		} else if (board->check(1))  {
+			std::cout << "Black is in check." << std::endl;
+		}
+	}
+	else if (state == 1) // checkmate
 	{
 		end = true;
 		wins[curplayer]++;
@@ -276,7 +283,7 @@ void Game::checkEnd() {
 		{
 			wins[j] += 0.5;
 		}
-		std::cout << "Tie." << std::endl;
+		std::cout << "Stalemate!" << std::endl;
 	}
 
 	if (end)

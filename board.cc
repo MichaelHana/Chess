@@ -135,26 +135,26 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 				std::cout << m.promote.second << std::endl;
 				if (color == 0) {
 					if (m.promote.second == 'Q') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Queen>(0));
+						pieces[m.end.second][m.end.first] = std::make_unique<Queen>(0);
 					} else if (m.promote.second == 'N') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Knight>(0));
+						pieces[m.end.second][m.end.first] = std::make_unique<Knight>(0);
 					} else if (m.promote.second == 'B') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Bishop>(0));
+						pieces[m.end.second][m.end.first] = std::make_unique<Bishop>(0);
 					} else if (m.promote.second == 'R') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Rook>(0));
+						pieces[m.end.second][m.end.first] = std::make_unique<Rook>(0);
 					} else {
 						valid_promotion = false;
 					}
 				}
 				else if (color == 1) {
 					if (m.promote.second == 'q') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Queen>(1));
+						pieces[m.end.second][m.end.first] = std::make_unique<Queen>(1);
 					} else if (m.promote.second == 'n') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Knight>(1));
+						pieces[m.end.second][m.end.first] = std::make_unique<Knight>(1);
 					} else if (m.promote.second == 'b') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Bishop>(1));
+						pieces[m.end.second][m.end.first] = std::make_unique<Bishop>(1);
 					} else if (m.promote.second == 'r') {
-						pieces[m.end.second][m.end.first] = std::move(std::make_unique<Rook>(1));
+						pieces[m.end.second][m.end.first] = std::make_unique<Rook>(1);
 					} else {
 						valid_promotion = false;
 					}
