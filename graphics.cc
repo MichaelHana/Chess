@@ -5,12 +5,12 @@
 #include <memory>
 
 Graphics::Graphics() {
-    xw = std::make_unique<Xwindow>(rows * 100, cols * 100);
+    xw = std::make_unique<Xwindow>(rows * tileSize, cols * tileSize);
     for (int a = 0; a < rows; ++a) {
         for (int b = 0; b < cols; ++b) {
             if ((a + b) % 2) {
                 //std::cout << a << b <<std::endl;
-                xw->fillRectangle(b * 100, a * 100, 100, 100, Xwindow::Red);
+                xw->fillRectangle(b * tileSize, a * tileSize, tileSize, tileSize, Xwindow::Red);
             }
         }
     }
@@ -27,8 +27,8 @@ Graphics::Graphics() {
     for (size_t i = 0; i < curboard.size(); ++i) {
         for (size_t j = 0; j < curboard[i].size(); ++j) {
             std::string s(1, curboard[i][j]);
-            xw->drawString(j * 100 + 50, i * 100 + 50, s);
-            //xw->drawString(j*100+40,i*100+40,convertpiece(curboard[i][j]));
+            xw->drawString(j * tileSize + tileSize/2 - 2, i * tileSize + tileSize/2 + 5, s);
+            //xw->drawString(j*tileSize+40,i*tileSize+40,convertpiece(curboard[i][j]));
         }
     }
 
@@ -50,9 +50,9 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
                                 std::string s (1, curboard[i][j]);
 
 				if ((i + j) % 2) {
-					xw->fillRectangle(j * 100, i * 100, 100, 100, Xwindow::Red);
+					xw->fillRectangle(j * tileSize, i * tileSize, tileSize, tileSize, Xwindow::Red);
 				} else {
-					xw->fillRectangle(j * 100, i * 100, 100, 100, Xwindow::White);
+					xw->fillRectangle(j * tileSize, i * tileSize, tileSize, tileSize, Xwindow::White);
 				}
 
 				if (start_changed) {
@@ -64,16 +64,16 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
 					start_changed = true;
 				}
 
-                                xw->drawString(j * 100 + 50, i * 100 + 50, s);
+                                xw->drawString(j * tileSize + tileSize/2 - 2, i * tileSize + tileSize/2 + 5, s);
                         } else if ((i == last_y_start && j == last_x_start) || (i == last_y_end && j == last_x_end)) {
 				std::string s (1, curboard[i][j]);
 				if ((i + j) % 2) {
-                                        xw->fillRectangle(j*100,i*100,100,100,Xwindow::Red);
+                                        xw->fillRectangle(j*tileSize,i*tileSize,tileSize,tileSize,Xwindow::Red);
                                 } else {
-                                        xw->fillRectangle(j*100,i*100,100,100,Xwindow::White);
+                                        xw->fillRectangle(j*tileSize,i*tileSize,tileSize,tileSize,Xwindow::White);
                                 }
 
-				xw->drawString(j * 100 + 50, i * 100 + 50, s);
+				xw->drawString(j * tileSize + tileSize/2 - 2, i * tileSize + tileSize/2 + 5, s);
 			}
                 }
         }
@@ -85,13 +85,13 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
 	
 	if (changed_tile <= 2 && changed_tile > 0 && start_x >= 0 && start_y >= 0) {
 		std::string s1(1, curboard[start_y][start_x]);
-		xw->fillRectangle(start_x * 100, start_y * 100, 100, 100, Xwindow::Blue);
-		xw->drawString(start_x * 100 + 50, start_y * 100 + 50, s1);
+		xw->fillRectangle(start_x * tileSize, start_y * tileSize, tileSize, tileSize, Xwindow::Blue);
+		xw->drawString(start_x * tileSize + tileSize/2 - 2, start_y * tileSize + tileSize/2 + 5, s1);
 
 		if (changed_tile == 2 && end_x >= 0 && end_y >= 0) {
 			std::string s2(1, curboard[end_y][end_x]);
-			xw->fillRectangle(end_x * 100, end_y * 100, 100, 100, Xwindow::Blue);
-			xw->drawString(end_x * 100 + 50, end_y * 100 + 50, s2);
+			xw->fillRectangle(end_x * tileSize, end_y * tileSize, tileSize, tileSize, Xwindow::Blue);
+			xw->drawString(start_x * tileSize + tileSize/2 - 2, start_y * tileSize + tileSize/2 + 5, s2);
 		}
 	}
 }

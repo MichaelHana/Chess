@@ -14,7 +14,7 @@ class Game {
 	static const int numplayers = 2;
 	int rows = 8;//static const int rows = 8;
 	int cols = 8;//static const int cols = 8;
-	float wins[numplayers] = {0, 0};
+	std::vector<int> wins = std::vector<int>(numplayers, 0);
 	bool game_running;
 	std::vector<std::vector<char>> start; //[rows][cols] = {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
 	std::unique_ptr<Board> board = nullptr;
