@@ -33,7 +33,6 @@ void Game::play()
 
 	viewers.emplace_back(std::make_unique<Text>(std::cout));
 	viewers.emplace_back(std::make_unique<Graphics>());
-	updateViewers();
 
 	while (std::cin >> command)
 	{
@@ -83,6 +82,8 @@ void Game::play()
 					break; // break to reset input
 				}
 			}
+
+			updateViewers();
 		}
 		else if (command == "resign")
 		{ // this would need to change if >2 players- basically just check turn mod numplayers
