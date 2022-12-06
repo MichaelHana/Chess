@@ -12,7 +12,7 @@ Move Level3::getMove(std::vector<Move> moves) {
 	std::vector<Move> filter;
 
 	for (auto i : moves) {
-		if (!i.check && !i.capture && !i.checkmate) {
+		if (!i.check && !i.capture.first && !i.checkmate) {
 			filter.emplace_back(i);
 		}
 	}

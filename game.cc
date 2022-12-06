@@ -109,6 +109,9 @@ void Game::play()
 			turn = 0;
 			game_running = false;
 			start =  {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
+			for (int i = 0; i < numplayers; ++i) {
+				players.pop_back();
+			}
 
 		}
 		else if (command == "move")
@@ -297,7 +300,7 @@ void Game::checkEnd() {
 	else if (state == 2)
 	{ // stalemate
 		end = true;
-		for (int j = 0; j<numplayers; ++j)
+		for (int j = 0; j < numplayers; ++j)
 		{
 			wins[j] += 0.5;
 		}
@@ -309,6 +312,9 @@ void Game::checkEnd() {
 		turn = 0;
 		game_running = false;
 		start = {{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'}, {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
+		for (int i = 0; i < numplayers; ++i) {
+			players.pop_back();
+		}
 	}
 	// do we need to account for insufficient material end case?????????
 	// do we need to add in 50-move rule or agreement or repetition?????

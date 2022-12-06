@@ -12,14 +12,13 @@ Move Level2::getMove(std::vector<Move> moves) {
 	std::vector<Move> filter;
 	
 	for (auto i: moves) {
-		if (i.check || i.capture || i.checkmate) {
+		if (i.check || i.capture.first || i.checkmate) {
 			filter.emplace_back(i);
 		}
 	}
 
 	if (filter.size() > 0) {
 		int random = rand() % filter.size();
-		std::cout << "check: " << filter[random].check << std::endl;
 		return filter[random];
 	}
 
