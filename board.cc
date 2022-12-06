@@ -68,7 +68,7 @@ Board::Board(int row, int col, std::vector<std::vector<char>> board) : board { b
 	}
 }
 
-bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *check_move, bool *checkmate_move, bool *castle_move) {
+bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *check_move, bool *checkmate_move, bool *castle_move, bool *promotion, bool *enPassant) {
 	int pieces_size = static_cast<int>(pieces.size());
 	if (m.start.second < pieces_size && m.end.second < pieces_size) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
@@ -182,6 +182,8 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 					pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 					pieces[m.end.second][m.end.first] = std::move(captured_piece);
 					return false;
+				} else if (promotion) {
+					*promotion = true;
 				}
 			}
 			
@@ -208,6 +210,10 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 			
 			if (capture) {
 				*capture = board[m.end.second][m.end.first];
+			}
+
+			if (enPassant && enPassant_capture) {
+				*enPassant = true;
 			}
 
 			int opposite_color = 0;
@@ -360,7 +366,7 @@ std::vector<Move> Board::listMoves(int color) {
 					if (pieces[i][j]) {
 						std::pair<int, int> start = std::make_pair( j, i );
 						std::pair<int, int> end = std::make_pair( x, y );
-						bool is_capture = false, is_check = false, is_checkmate = false, is_castle = false;
+						bool is_capture = false, is_check = false, is_checkmate = false, is_castle = false, is_promotion = false, is_enPassant = false;
 
 						//check for castle
 						if (dynamic_cast<King *>(pieces[i][j].get()) && j == 4) {
@@ -374,7 +380,7 @@ std::vector<Move> Board::listMoves(int color) {
 							if (capture != ' ') {
 								is_capture = true;
 							}	
-							Move m { start, end, std::make_pair(is_capture, capture), is_check, is_checkmate, is_castle };
+							Move m { start, end, std::make_pair(is_capture, capture), is_check, is_checkmate, is_castle , std::make_pair(is_promotion, ' '), is_enPassant};
 							moves.emplace_back(m);
 						}
 					}

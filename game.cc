@@ -43,10 +43,8 @@ void Game::play()
 				continue;
 			}
 
-			game_running = true;
-
-			board = std::make_unique<Board>(rows, cols, start);
-
+			bool valid_inputs = true;
+				
 			for (int i = 0; i < numplayers; ++i)
 			{
 				std::string player;
@@ -78,12 +76,17 @@ void Game::play()
 					for (size_t j = 0; j < players.size(); ++j) {
 						players.pop_back();
 					}
+					valid_inputs = false;
 					game_running = false;
 					break; // break to reset input
 				}
 			}
 
-			updateViewers();
+			if (valid_inputs) {
+				game_running = true;
+				board = std::make_unique<Board>(rows, cols, start);
+				updateViewers();
+			}
 		}
 		else if (command == "resign")
 		{ // this would need to change if >2 players- basically just check turn mod numplayers
@@ -171,6 +174,55 @@ void Game::play()
 		else if (command == "setup")
 		{
 			setup();
+		}
+		else if (command == "undo") {
+			if (static_cast<int>(move_history.size()) <= 0) {
+				std::cout << "Cannot undo." << std::endl;
+				continue;
+			}
+
+			std::vector<std::vector<char>> board_copy = board->getState();
+			Move last_move = move_history.back();
+			
+			//undo enpassant
+			if (last_move.enPassant) {
+				if (last_move.end.second < last_move.start.second) {//white
+					board->place('p', std::make_pair(last_move.end.first, last_move.start.second));
+				} else if (last_move.end.second > last_move.start.second) {//black
+					board->place('P', std::make_pair(last_move.end.first, last_move.start.second));
+				}
+			}
+			
+			board->place(board_copy[last_move.end.second][last_move.end.first], last_move.start);
+			board->remove(last_move.end);
+
+			//undo castle
+			if (last_move.castle) {
+				int direction = last_move.end.first - last_move.start.first;
+				int rook_index = 5;
+				int rook_original = 7;
+				if (direction < 0) {
+					rook_index = 3;
+					rook_original = 0;
+				}
+					
+				board->place(board_copy[last_move.start.second][rook_index], std::make_pair(rook_original, last_move.start.second));
+				board->remove(std::make_pair(rook_index, last_move.start.second));
+			}
+
+			//undo promotion
+			if (last_move.promote.first) {
+				board->remove(last_move.start);
+				if (board_copy[last_move.end.second][last_move.end.first] >= 'A' && board_copy[last_move.end.second][last_move.end.first] <= 'Z') {
+					board->place('P', last_move.start);
+				} else if (board_copy[last_move.end.second][last_move.end.first] >= 'a' && board_copy[last_move.end.second][last_move.end.first] <= 'z') {
+					board->place('p', last_move.start);
+				}
+			}
+		
+			--turn;
+			move_history.pop_back();	
+			updateViewers();
 		}
 		else
 		{
