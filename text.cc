@@ -7,10 +7,10 @@ void Text::update(std::vector<std::vector<char>> board) {
         
 	//print board
 	for (int i = 0; i < rows; ++i) {
-                out << i << " ";
+                out << rows - i << " ";
                 for (int j = 0; j < cols; ++j) {
                         std::string piece = convertpiece(board[i][j]);
-                        if ((i+j)%2 && piece == " ") {
+                        if ((i+j)%2 == 0 && piece == " ") {
                                 out << "-";
                         } else {
                                 out << piece;

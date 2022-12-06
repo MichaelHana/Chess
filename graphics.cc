@@ -7,7 +7,7 @@ Graphics::Graphics(int rows, int cols): Viewer{rows, cols} {
 	xw = std::make_unique<Xwindow>(rows * tileSize, cols * tileSize);
 	for (int a = 0; a < rows; ++a) {
 		for (int b = 0; b < cols; ++b) {
-            		if ((a + b) % 2) {
+            		if ((a + b) % 2 == 0) {
                		 xw->fillRectangle(b * tileSize, a * tileSize, tileSize, tileSize, Xwindow::Red);
 					}
         	}
@@ -50,7 +50,7 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
                                 std::string s (1, curboard[i][j]);
 
 				//update tile color
-				if ((i + j) % 2) {
+				if ((i + j) % 2 == 0) {
 					xw->fillRectangle(j * tileSize, i * tileSize, tileSize, tileSize, Xwindow::Red);
 				} else {
 					xw->fillRectangle(j * tileSize, i * tileSize, tileSize, tileSize, Xwindow::White);
@@ -70,7 +70,7 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
                                 xw->drawString(j * tileSize + tileSize/2 - 2, i * tileSize + tileSize/2 + 5, s);
                         } else if ((i == last_y_start && j == last_x_start) || (i == last_y_end && j == last_x_end)) {//updating previously changed to normal colors
 				std::string s (1, curboard[i][j]);
-				if ((i + j) % 2) {
+				if ((i + j) % 2 == 0) {
                                         xw->fillRectangle(j*tileSize,i*tileSize,tileSize,tileSize,Xwindow::Red);
                                 } else {
                                         xw->fillRectangle(j*tileSize,i*tileSize,tileSize,tileSize,Xwindow::White);
