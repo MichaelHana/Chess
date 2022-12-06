@@ -10,6 +10,7 @@ class Level2 : public Computer {
 	public:
 		Level2(int color);
 		Move getMove(std::vector<Move> moves);
+		char getPromotion();
 };
 
 #endif

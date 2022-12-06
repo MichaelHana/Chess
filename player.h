@@ -6,7 +6,8 @@
 struct Move;
 
 class Player {
-	int color;
+	protected:
+		int color;
 	public:
 		Player(int color);
 		int getColor();

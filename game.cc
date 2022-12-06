@@ -6,7 +6,7 @@
 #include "level1.h"
 #include "level2.h"
 #include "level3.h"
-// include "level4.h"
+#include "level4.h"
 #include "text.h"
 #include "graphics.h"
 #include "move.h"
@@ -64,12 +64,9 @@ void Game::play()
 				else if (player == "computer3")
 				{
 					players.emplace_back(std::make_unique<Level3>(i));
+				} else if (player == "computer4") {
+					players.emplace_back(std::make_unique<Level4>(i));
 				}
-				/*} else if (player == "computer4") {
-						Level4 *plyr = new Level4(); // what arguments??
-						players.emplace_back(plyr);
-						break;
-				}*/
 				else
 				{
 					std::cout << "invalid player :" << player << std::endl;
