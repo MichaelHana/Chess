@@ -10,6 +10,7 @@
 #include "queen.h"
 #include "king.h"
 #include "piece.h"
+#include "moveerror.h"
 
 Board::Board(int row, int col, std::vector<std::vector<char>> board) : board { board } {
 	for (int i = 0; i < col; ++i) {
@@ -430,8 +431,7 @@ void Board::place(char piece, std::pair<int, int> coord) {
 	//check for valid coords
 	if (coord.first >= 0 && coord.second >= 0 && coord.second < static_cast<int>(pieces.size()) && coord.first < static_cast<int>(pieces[coord.second].size())) {
 		if (pieces[coord.second][coord.first]) {//if piece exits at coords
-			std::string error = "You cannot place a piece there.";
-			throw(error);
+			throw (MoveError{"You cannot place a piece there."});
 		} else {
 			if (piece >= 'a' && piece <= 'z') {
 				if (piece == 'p') {
@@ -490,8 +490,7 @@ void Board::place(char piece, std::pair<int, int> coord) {
 			board[coord.second][coord.first] = piece;
 		}
 	} else {
-		std::string error = "Invalid coordinate.";
-		throw (error);
+		throw (MoveError{"Invalid coordinate."});
 	}
 }
 
@@ -501,8 +500,7 @@ void Board::remove(std::pair<int, int> coord){
 		pieces[coord.second][coord.first].reset();
 		board[coord.second][coord.first] = ' ';
 	} else {
-		std::string error = "Invalid coordinate.";
-		throw (error);
+		throw (MoveError{"Invalid coordinate."});
 	}
 }
 

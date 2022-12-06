@@ -13,6 +13,7 @@
 #include "text.h"
 #include "graphics.h"
 #include "move.h"
+#include "moveerror.h"
 
 const std::vector<std::vector<char>> regular_setup =  { {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}, 
 							{'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}, 
@@ -162,7 +163,7 @@ void Game::play()
 				int move_history_size = static_cast<int>(move_history.size());
 				int second_last = move_history_size - 2;
 				if (move_history_size > 1 && abs(move_history[second_last].end.second - move_history[second_last].start.second) == 2 && 
-						abs(move_history[second_last].end.first - move_history[second_last].start.first == 0)) {//if enPassant
+						abs(move_history[second_last].end.first - move_history[second_last].start.first) == 0) {//if enPassant
 					Pawn *pawn = dynamic_cast<Pawn *>(board->getPiece(move_history[second_last].end));
 					if (pawn) {
 						pawn->setEnPassant(false);	
@@ -202,8 +203,8 @@ void Game::play()
 				if (last_move.capture.first && !last_move.enPassant) {
 					board->place(last_move.capture.second, last_move.end);
 				}
-			} catch (std::string e) {
-				std::cout << e << std::endl;
+			} catch (MoveError e) {
+				std::cout << e.what() << std::endl;
 			}
 
 			//undo castle
@@ -223,8 +224,8 @@ void Game::play()
 					if (last_move.capture.first && !last_move.enPassant) {
 						board->place(last_move.capture.second, last_move.end);
 					}
-				} catch (std::string e) {
-					std::cout << e << std::endl;
+				}  catch (MoveError e) {
+					std::cout << e.what() << std::endl;
 				}
 			}
 
@@ -237,8 +238,8 @@ void Game::play()
 					} else if (board_copy[last_move.end.second][last_move.end.first] >= 'a' && board_copy[last_move.end.second][last_move.end.first] <= 'z') {//black
 						board->place('p', last_move.start);
 					}
-				} catch (std::string e) {
-					std::cout << e << std::endl;
+				} catch (MoveError e) {
+					std::cout << e.what() << std::endl;
 				}
 			}
 		
@@ -292,8 +293,8 @@ void Game::setup() {
 			//place piece
 			try {
 				board->place(c, coord_pair); 
-			} catch (std::string e) {
-				std::cout << e << std::endl;
+			} catch (MoveError e) {
+				std::cout << e.what() << std::endl;
 			}
 		} else if (command == "-") {
 			std::string coord;
@@ -311,8 +312,8 @@ void Game::setup() {
 			//remove piece
 			try {
 				board->remove(coord_pair); 
-			} catch (std::string e) {
-				std::cout << e << std::endl;
+			} catch (MoveError e) {
+				std::cout << e.what() << std::endl;
 			}
 		} else if (command == "=") {
 			std::string color;

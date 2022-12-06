@@ -3,9 +3,10 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include <string>
 
 struct Move;
-struct Piece;
+class Piece;
 
 class Board {
 	std::vector<std::vector<std::unique_ptr<Piece>>> pieces;
