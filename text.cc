@@ -4,37 +4,25 @@
 Text::Text(int rows, int cols, std::ostream &out): Viewer{rows, cols}, out(out) {}
 
 void Text::update(std::vector<std::vector<char>> board) {
-
-	//board top
-        out << " ";
-        for (int i=0; i <= 3 * cols; ++i) {
-                out << "-";
-        }
-
-        out << std::endl;
         
 	//print board
 	for (int i = 0; i < rows; ++i) {
-                out << i << "|";
+                out << i << " ";
                 for (int j = 0; j < cols; ++j) {
                         std::string piece = convertpiece(board[i][j]);
                         if ((i+j)%2 && piece == " ") {
-                                out << "\u25A0 |";
+                                out << "-";
                         } else {
-                                out << piece << " |";
+                                out << piece;
                         }
                 }
                 out << std::endl;
-                out << " ";
-                for (int i = 0; i <= 3 * cols; ++i) {
-                        out << "-";
-                }
-                out << std::endl;
         }
+        out << "  ";
         for (int k=0; k < cols; ++k) {
                 char letter = 'a'+k;
                 std::string strletter(1,letter);
-                out << "  " << strletter;
+                out << strletter;
         }
         out << std::endl;
 }
