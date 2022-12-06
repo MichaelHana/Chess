@@ -8,7 +8,6 @@
 struct Move;
 
 class Board {
-	int row, col;
 	std::vector<std::vector<std::unique_ptr<Piece>>> pieces;
 	std::vector<std::vector<char>> board;
 	public:

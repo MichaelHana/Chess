@@ -16,16 +16,16 @@ bool King::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 	
 	//castling
 	if (x == 2 && y == 0 && moved == false) {
-		std::pair<int, int> king_rook = std::make_pair(7, 7);
-		std::pair<int, int> queen_rook = std::make_pair(0, 7);
-		if (board->getPiece(king_rook) && !board->getPiece(king_rook)->getMoved() && dynamic_cast<Rook *>(board->getPiece(king_rook))) {
-			if (!board->getPiece(std::make_pair(6, 7)) && !board->getPiece(std::make_pair(5, 7))) {
+		std::pair<int, int> king_rook = std::make_pair(7, end.second);
+		std::pair<int, int> queen_rook = std::make_pair(0, end.second);
+		if (board->getPiece(king_rook) && !board->getPiece(king_rook)->getMoved() && dynamic_cast<Rook *>(board->getPiece(king_rook)) && end.first == 6) {
+			if (!board->getPiece(std::make_pair(6, end.second)) && !board->getPiece(std::make_pair(5, end.second))) {
 				return true;
 			}
 		}
 
-		if (board->getPiece(queen_rook) && !board->getPiece(queen_rook)->getMoved() && dynamic_cast<Rook *>(board->getPiece(queen_rook))) {
-			if (!board->getPiece(std::make_pair(1, 7)) && !board->getPiece(std::make_pair(2, 7)) && !board->getPiece(std::make_pair(3, 7))) {
+		if (board->getPiece(queen_rook) && !board->getPiece(queen_rook)->getMoved() && dynamic_cast<Rook *>(board->getPiece(queen_rook)) && end.first == 2) {
+			if (!board->getPiece(std::make_pair(1, end.second)) && !board->getPiece(std::make_pair(2, end.second)) && !board->getPiece(std::make_pair(3, end.second))) {
 				return true;
 			}
 		}

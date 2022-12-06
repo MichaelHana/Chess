@@ -12,7 +12,7 @@
 #include "king.h"
 #include "piece.h"
 
-Board::Board(int row, int col, std::vector<std::vector<char>> board) : row{ row }, col{ col }, board { board } {
+Board::Board(int row, int col, std::vector<std::vector<char>> board) : board { board } {
 	for (int i = 0; i < col; ++i) {
 		std::vector<std::unique_ptr<Piece>> piece_row;
 
@@ -93,7 +93,7 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 			if (pieces[m.end.second][m.end.first].get()) {
 				captured_piece = std::move(pieces[m.end.second][m.end.first]);
 			}
-		
+	
 			//check if king is moving through checked squares when castling
 			if (castle) {
 				int direction = m.end.first - m.start.first;
@@ -121,7 +121,7 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 			//make the move
 			pieces[m.end.second][m.end.first] = std::move(pieces[m.start.second][m.start.first]);
 			pieces[m.start.second][m.start.first].reset();
-
+			
 			// revert move if king ends up in check
 			if (check(pieces[m.end.second][m.end.first]->getColor())) {
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
@@ -132,7 +132,6 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 			//promotion
 			bool valid_promotion = true;	
 			if (m.promote.first == true) {
-				std::cout << m.promote.second << std::endl;
 				if (color == 0) {
 					if (m.promote.second == 'Q') {
 						pieces[m.end.second][m.end.first] = std::make_unique<Queen>(0);
@@ -247,7 +246,7 @@ bool Board::check(int king_color) {
 	int king_y = 0;
 	for (int y = 0; y < static_cast<int>(pieces.size()); ++y) {
 		for (int x = 0; x < static_cast<int>(pieces[y].size()); ++x) {
-			Piece *king = dynamic_cast<King*>(pieces[y][x].get());
+			Piece *king = dynamic_cast<King *>(pieces[y][x].get());
 			if (king && pieces[y][x]->getColor() == king_color) {//piece is a king and matches the color of the moving piece
 				king_x = x;
 				king_y = y;
@@ -315,12 +314,12 @@ std::vector<Move> Board::listMoves(int color) {
 
 						//check for castle
 						if (dynamic_cast<King *>(pieces[i][j].get()) && j == 4) {
-							if ((i == 7 || i == 0) && (x == 0 || x == 7) && y == i) {//if castle
+							if ((i == 7 || i == 0) && (x == 2 || x == 6) && y == i) {//if castle
 								is_castle = true;
 							}
 						}
 
-						if (checkMove({start, end, false, false, false, false}, pieces[i][j]->getColor(), true, &is_check, &is_checkmate, &is_castle)) {
+						if (checkMove({start, end, false, false, false, false}, color, true, &is_check, &is_checkmate, &is_castle)) {
 							if (pieces[end.second][end.first]) {
 								is_capture = true;
 							}	
