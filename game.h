@@ -6,6 +6,7 @@
 #include "board.h"
 #include "viewer.h"
 #include "player.h"
+#include "move.h"
 
 //class Player;
 
@@ -20,6 +21,7 @@ class Game {
 	std::unique_ptr<Board> board = nullptr;
 	std::vector<std::unique_ptr<Player>> players; //?
 	std::vector<std::unique_ptr<Viewer>> viewers; //?
+	std::vector<Move> move_history;
 public:
 	void play();
 	void updateViewers();

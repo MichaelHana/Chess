@@ -1,5 +1,6 @@
 #include "game.h"
 #include "board.h"
+#include "pawn.h"
 #include "human.h"
 #include "computer.h"
 #include "level1.h"
@@ -138,12 +139,25 @@ void Game::play()
 					playermove.promote.second = c;
 				}
 				valid_move = board->checkMove(playermove, curplayer);
+				if (valid_move) {
+					move_history.emplace_back(playermove);
+				}
 				updateViewers();
 			}
 
 			if (valid_move) {
 				checkEnd();
 				turn++;
+
+				//update enpassants
+				int move_history_size = static_cast<int>(move_history.size());
+				int second_last = move_history_size - 2;
+				if (move_history_size > 1 && abs(move_history[second_last].end.second - move_history[second_last].start.second) == 2 && abs(move_history[second_last].end.first - move_history[second_last].start.first == 0)) {
+					Pawn *pawn = dynamic_cast<Pawn *>(board->getPiece(move_history[second_last].end));
+					if (pawn) {
+						pawn->setEnPassant(false);	
+					}
+				}
 			} else {
 				std::cout << "Invalid move. Please enter a valid move" << std::endl;
 			}

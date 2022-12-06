@@ -80,6 +80,7 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 			}
 			
 			std::unique_ptr<Piece> captured_piece;
+			std::unique_ptr<Piece> enPassant_capture;
 			bool castle = false;
 
 			//check if move is a castle
@@ -92,6 +93,13 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 			//hang on to potentially captured piece
 			if (pieces[m.end.second][m.end.first].get()) {
 				captured_piece = std::move(pieces[m.end.second][m.end.first]);
+			}
+
+			//en passant capture
+			if (abs(m.end.first - m.start.first) == 1 && abs(m.end.second - m.start.second) == 1 && !captured_piece && pieces[m.start.second][m.end.first]) {
+				if (dynamic_cast<Pawn *>(pieces[m.start.second][m.end.first].get())) {
+					enPassant_capture = std::move(pieces[m.start.second][m.end.first]);
+				}
 			}
 	
 			//check if king is moving through checked squares when castling
@@ -121,11 +129,17 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 			//make the move
 			pieces[m.end.second][m.end.first] = std::move(pieces[m.start.second][m.start.first]);
 			pieces[m.start.second][m.start.first].reset();
+			if (enPassant_capture) {
+				pieces[m.start.second][m.end.first].reset();
+			}
 			
 			// revert move if king ends up in check
 			if (check(pieces[m.end.second][m.end.first]->getColor())) {
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 				pieces[m.end.second][m.end.first] = std::move(captured_piece);
+				if (enPassant_capture) {
+					pieces[m.start.second][m.end.first] = std::move(enPassant_capture);
+				}
 				return false;
 			}
 		
@@ -172,6 +186,13 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 				//update board and commit to move
 				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
 				board[m.start.second][m.start.first] = ' ';
+
+				// if the move enables an enpassant, then enable it for the pawn
+				if (abs(m.end.second - m.start.second) == 2 && m.end.first - m.start.first == 0 && dynamic_cast<Pawn *>(pieces[m.end.second][m.end.first].get()) && !pieces[m.end.second][m.end.first]->getMoved()) {
+					Pawn *pawn = dynamic_cast<Pawn *>(pieces[m.end.second][m.end.first].get());
+					pawn->setEnPassant(true);
+				}
+
 				pieces[m.end.second][m.end.first]->setMoved();
 
 				//move rook if castling
@@ -199,6 +220,11 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 					board[m.end.second][m.end.first] = m.promote.second;
 				}
 
+				//en passant capture
+				if (enPassant_capture) {
+					board[m.start.second][m.end.first] = ' ';
+				}
+
 				//return if move is a check or checkmate
 				int opposite_color = 0;
 				if (pieces[m.end.second][m.end.first]->getColor() == 0) {
@@ -220,6 +246,9 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, bool *check_move, boo
 				//undo the move
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 				pieces[m.end.second][m.end.first] = std::move(captured_piece);
+				if (enPassant_capture) {
+					pieces[m.start.second][m.end.first] = std::move(enPassant_capture);
+				}
 			}
 			return true;
 		}
@@ -400,6 +429,10 @@ void Board::place(char piece, std::pair<int, int> coord) {
 				}
 			}
 			pieces[coord.second][coord.first]->setMoved();
+			if (dynamic_cast<Pawn *>(pieces[coord.second][coord.first].get())) {
+				Pawn *p = dynamic_cast<Pawn *>(pieces[coord.second][coord.first].get());
+				p->setEnPassant(false);
+			}
 			board[coord.second][coord.first] = piece;
 		}
 	} else {

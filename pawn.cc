@@ -3,7 +3,7 @@
 #include "board.h"
 #include <stdlib.h>
 
-Pawn::Pawn(int color) : Piece(color) {}
+Pawn::Pawn(int color) : Piece{color}, can_be_enpassant{false} {}
 
 bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) {
 	// assumed that board checks move is in bounds
@@ -28,6 +28,13 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 			}
 		} else if (abs(start.first - end.first) == 1 && end.second - start.second == -1) { // diagonal move: capture
 			if (!board->getPiece(end)) { // no piece to capture
+				Piece *piece = board->getPiece(std::make_pair(end.first, start.second));
+				if (piece && piece->getColor() != color) {
+					Pawn *p = dynamic_cast<Pawn *>(piece);
+					if (p && p->getEnPassant()) {
+						return true;
+					}
+				}
 				return false;
 			} else if (board->getPiece(end)->getColor() == color) { // friendly piece to capture
 				return false;
@@ -54,6 +61,13 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 			}
 		} else if (abs(start.first - end.first) == 1 && end.second - start.second == 1) { // diagonal move: capture
 			if (!board->getPiece(end)) { // no piece to capture
+				Piece *piece = board->getPiece(std::make_pair(end.first, start.second));
+				if (piece && piece->getColor() != color) {
+					Pawn *p = dynamic_cast<Pawn *>(piece);
+					if (p && p->getEnPassant()) {
+						return true;
+					}
+				}
 				return false;
 			} else if (board->getPiece(end)->getColor() == color) { // friendly piece to capture
 				return false;
@@ -64,4 +78,12 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 	}
 
 	return true;
+}
+
+bool Pawn::getEnPassant() {
+	return can_be_enpassant;
+}
+
+void Pawn::setEnPassant(bool b) {
+	can_be_enpassant = b;
 }
