@@ -11,12 +11,14 @@ Move Level3::getMove(std::vector<Move> moves) {
 	
 	std::vector<Move> filter;
 
+	//filter non-captures, non-checks, and non-checkmates
 	for (auto i : moves) {
 		if (!i.check && !i.capture.first && !i.checkmate) {
 			filter.emplace_back(i);
 		}
 	}
 
+	//pick a move that is not a capture, check, or checkmate
 	if (filter.size() > 0) {
 		int random = rand() % filter.size();
 		return filter[random];

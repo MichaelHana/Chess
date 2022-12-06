@@ -19,7 +19,7 @@ char Computer::getPromotion() {
 		} else {
 			return 'R';
 		}
-	} else if (color == 1) {
+	} else if (color == 1) {//black
 		if (random == 0) {
 			return 'q';
 		} else if (random == 1) {

@@ -1,21 +1,22 @@
 #include "text.h"
-#include "symbols.h"
 #include <iostream>
 
-// need to ensure that will always be passed a 2d char array of the correct size (rows, cols) or this might seg fault?? - otherwise can change to determining rows and cols by size of board, then filling in board will blanks if its the wrong size??
-void Text::update(std::vector<std::vector<char>> board) {//(char board[rows][cols]) {
-        // could use black piece symbols with diff font colour for multiplayer
+Text::Text(int rows, int cols, std::ostream &out): Viewer{rows, cols}, out(out) {}
 
-        //int rows = sizeof board / sizeof board[0];
-        //int cols = sizeof board[0];
-        for (int i=0; i<=3*cols; i++) {
+void Text::update(std::vector<std::vector<char>> board) {
+
+	//board top
+        for (int i=0; i <= 3 * cols; ++i) {
                 out << "-";
         }
+
         out << std::endl;
-        for (int i=0; i<rows; i++) {
+        
+	//print board
+	for (int i = 0; i < rows; ++i) {
                 out << "|";
-                for (int j=0; j<cols;j++) {
-                        std::string piece= convertpiece(board[i][j]);
+                for (int j = 0; j < cols; ++j) {
+                        std::string piece = convertpiece(board[i][j]);
                         if ((i+j)%2 && piece == " ") {
                                 out << "__|";
                         } else {
@@ -23,11 +24,29 @@ void Text::update(std::vector<std::vector<char>> board) {//(char board[rows][col
                         }
                 }
                 out << std::endl;
-                for (int i=0; i<=3*cols; i++) {
+                for (int i = 0; i <= 3 * cols; ++i) {
                         out << "-";
                 }
                 out << std::endl;
         }
 }
 
-Text::Text(std::ostream &out): out(out) {}
+std::string Text::convertpiece(char piece){
+        switch (piece) {
+                // white: //IMPORTANT: on dark mode, these look opposite!!!
+                case 'k': return "\u2654";
+                case 'q': return "\u2655";
+                case 'r': return "\u2656";
+                case 'b': return "\u2657";
+                case 'n': return "\u2658"; //knight
+                case 'p': return "\u2659";
+                // black:
+                case 'K': return "\u265A";
+                case 'Q': return "\u265B";
+                case 'R': return "\u265C";
+                case 'B': return "\u265D";
+                case 'N': return "\u265E";
+                case 'P': return "\u265F";
+                default: return " ";
+        }
+}

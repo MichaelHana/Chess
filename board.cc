@@ -1,5 +1,4 @@
 #include <vector>
-#include <iostream>
 #include <utility>
 #include <memory>
 #include "move.h"
@@ -58,7 +57,7 @@ Board::Board(int row, int col, std::vector<std::vector<char>> board) : board { b
 					piece_row.emplace_back(std::make_unique<King>(0));
 				}
 			}
-			else {
+			else {//if no piece at this location
 				auto p = std::make_unique<Pawn>(-1);
 				p.reset();
 				piece_row.emplace_back(std::move(p));
@@ -70,11 +69,16 @@ Board::Board(int row, int col, std::vector<std::vector<char>> board) : board { b
 
 bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *check_move, bool *checkmate_move, bool *castle_move, bool *promotion, bool *enPassant) {
 	int pieces_size = static_cast<int>(pieces.size());
+	
 	if (m.start.second < pieces_size && m.end.second < pieces_size) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
 		int pieces_end_size = static_cast<int>(pieces[m.end.second].size());
 		
-		if (m.start.first >= 0 && m.start.second >= 0  && m.start.first < pieces_start_size && m.end.first >= 0 && m.end.second >= 0 && m.end.first < pieces_end_size && pieces[m.start.second][m.start.first] && pieces[m.start.second][m.start.first]->validMove(this, m.start, m.end)) {//check if piece can move there
+		if (m.start.first >= 0 && m.start.second >= 0  && m.start.first < pieces_start_size && m.end.first >= 0 && m.end.second >= 0 && 
+				m.end.first < pieces_end_size && pieces[m.start.second][m.start.first] && 
+				pieces[m.start.second][m.start.first]->validMove(this, m.start, m.end)) {//check if piece can move there
+			
+			//if the piece at the start coordinate are the same as the color of the one playing the move
 			if (pieces[m.start.second][m.start.first]->getColor() != color) {
 				return false;
 			}
@@ -86,7 +90,6 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 			int rook_index = 7;
 			int rook_destination = 5;
 				
-
 			//check if move is a castle
 			if (dynamic_cast<King *>(pieces[m.start.second][m.start.first].get()) && (m.start.first == 4 && (m.start.second == 0 || m.start.second == 7))) {
 					if (m.end.second == m.start.second && (m.end.first == 2 || m.end.first == 6)) {//king moved to castle coords
@@ -99,9 +102,10 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 				captured_piece = std::move(pieces[m.end.second][m.end.first]);
 			}
 
-			//en passant capture
+			//hang on to en passant capture
 			if (abs(m.end.first - m.start.first) == 1 && abs(m.end.second - m.start.second) == 1 && !captured_piece && pieces[m.start.second][m.end.first]) {
-				if (dynamic_cast<Pawn *>(pieces[m.start.second][m.end.first].get())) {
+				//piece capturing and piece being captured are both pawns
+				if (dynamic_cast<Pawn *>(pieces[m.start.second][m.end.first].get()) && dynamic_cast<Pawn *>(pieces[m.start.second][m.start.first].get())) {
 					enPassant_capture = std::move(pieces[m.start.second][m.end.first]);
 				}
 			}
@@ -132,15 +136,15 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 			//make the move
 			pieces[m.end.second][m.end.first] = std::move(pieces[m.start.second][m.start.first]);
 			pieces[m.start.second][m.start.first].reset();
-			if (enPassant_capture) {
+			if (enPassant_capture) {//capture the enPassant piece
 				pieces[m.start.second][m.end.first].reset();
 			}
 			
-			// revert move if king ends up in check
+			//revert move if king ends up in check
 			if (check(pieces[m.end.second][m.end.first]->getColor())) {
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 				pieces[m.end.second][m.end.first] = std::move(captured_piece);
-				if (enPassant_capture) {
+				if (enPassant_capture) {//revert enPassant capture
 					pieces[m.start.second][m.end.first] = std::move(enPassant_capture);
 				}
 				return false;
@@ -149,7 +153,7 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 			//promotion
 			bool valid_promotion = true;	
 			if (m.promote.first == true) {
-				if (color == 0) {
+				if (color == 0) {//white
 					if (m.promote.second == 'Q') {
 						pieces[m.end.second][m.end.first] = std::make_unique<Queen>(0);
 					} else if (m.promote.second == 'N') {
@@ -162,7 +166,7 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 						valid_promotion = false;
 					}
 				}
-				else if (color == 1) {
+				else if (color == 1) {//black
 					if (m.promote.second == 'q') {
 						pieces[m.end.second][m.end.first] = std::make_unique<Queen>(1);
 					} else if (m.promote.second == 'n') {
@@ -176,20 +180,19 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 					}
 				}
 
-				if (valid_promotion == false) {
-					std::cout << "Invalid Promotion." << std::endl;
+				if (valid_promotion == false) {//char inputted is not valid
 					//undo the move
 					pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 					pieces[m.end.second][m.end.first] = std::move(captured_piece);
 					return false;
-				} else 	if (promotion) {
-						*promotion = true;
+				} else 	if (promotion) {//update promotion pointer
+					*promotion = true;
 				}
 			}
 			
 			//move rook if castling
 			if (castle) {
-				if (direction < 0) {
+				if (direction < 0) {//decide which rook to move for castle
 					rook_index = 0;
 					rook_destination = 3;
 				}
@@ -197,23 +200,25 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 				//make the rook move
 				pieces[m.end.second][rook_destination] = std::move(pieces[m.end.second][rook_index]);
 				pieces[m.start.second][rook_index].reset();
-				if (castle_move) {
+				if (castle_move) {//update castle pointer
 					*castle_move = true;
 				}
 			}
 
-			//promotion
+			//change promotion character on the board
 			if (m.promote.first && valid_promotion) {
 				board[m.end.second][m.end.first] = m.promote.second;
 			}
 			
-			
+			//update capture pointer
 			if (capture) {
 				*capture = board[m.end.second][m.end.first];
 			}
 
-			if (enPassant && enPassant_capture) {
+			//update enPassant pointer
+			if (enPassant && enPassant_capture && capture) {
 				*enPassant = true;
+				*capture = true;
 			}
 
 			int opposite_color = 0;
@@ -221,23 +226,26 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 				opposite_color = 1;
 			}
 
+			//check if enemy is in check and update pointer
 			if (check_move) {
 				if (check(opposite_color)) {
 					*check_move = true;
 				}
 			}
 
+			//check if enemy is in checkmate and update pointer
 			if (checkmate_move) {
 				if (checkmate(opposite_color)) {
 					*checkmate_move = true;
 				}
 			}
 
-			if (!onlyTesting) {
+			if (!onlyTesting) {//actually make the move
 				//update board and commit to move	
 				board[m.end.second][m.end.first] = board[m.start.second][m.start.first];
 				board[m.start.second][m.start.first] = ' ';
 				
+				//update board for castling
 				if (castle) {
 					board[m.end.second][rook_destination] = board[m.end.second][rook_index];
 					board[m.start.second][rook_index] = ' ';
@@ -249,7 +257,9 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 				}
 
 				// if the move enables an enpassant, then enable it for the pawn
-				if (abs(m.end.second - m.start.second) == 2 && m.end.first - m.start.first == 0 && dynamic_cast<Pawn *>(pieces[m.end.second][m.end.first].get()) && !pieces[m.end.second][m.end.first]->getMoved()) {
+				if (abs(m.end.second - m.start.second) == 2 && m.end.first - m.start.first == 0 && 
+						dynamic_cast<Pawn *>(pieces[m.end.second][m.end.first].get()) && !pieces[m.end.second][m.end.first]->getMoved()) {
+					
 					Pawn *pawn = dynamic_cast<Pawn *>(pieces[m.end.second][m.end.first].get());
 					pawn->setEnPassant(true);
 				}
@@ -259,12 +269,13 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 					board[m.start.second][m.end.first] = ' ';
 				}
 				
+				//set pieces to moved
 				pieces[m.end.second][m.end.first]->setMoved();					
 			} else {
 				//undo the move
 				pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 				pieces[m.end.second][m.end.first] = std::move(captured_piece);
-				if (enPassant_capture) {
+				if (enPassant_capture) {//undo enPassant capture
 					pieces[m.start.second][m.end.first] = std::move(enPassant_capture);
 				}
 
@@ -294,7 +305,10 @@ std::vector<std::vector<char>> Board::getState() {
 }
 
 Piece* Board::getPiece(std::pair<int, int> coords) {
-	if (coords.first >= 0 && coords.second >= 0 && coords.second < static_cast<int>(pieces.size()) && coords.first < static_cast<int>(pieces[coords.second].size()) && pieces[coords.second][coords.first].get()) {
+	//check if coords are valid and if piece exists at coords
+	if (coords.first >= 0 && coords.second >= 0 && coords.second < static_cast<int>(pieces.size()) 
+			&& coords.first < static_cast<int>(pieces[coords.second].size()) && pieces[coords.second][coords.first].get()) {
+		
 		return pieces[coords.second][coords.first].get();
 	}
 
@@ -351,10 +365,10 @@ int Board::checkmate(int color) {//0 = not checkmate or stalemate, 1 = checkmate
 			}
 		}
 	}
+
 	if (!valid_moves && check(color)) {
 		return 1; // checkmate
-	}
-	else if ((!valid_moves && !check(color)) || piece_count <= 2) {
+	} else if ((!valid_moves && !check(color)) || piece_count <= 2) {
 		return 2; // stalemate
 	}
 	return 0; // game not ended
@@ -373,19 +387,14 @@ std::vector<Move> Board::listMoves(int color) {
 						std::pair<int, int> end = std::make_pair( x, y );
 						bool is_capture = false, is_check = false, is_checkmate = false, is_castle = false, is_promotion = false, is_enPassant = false;
 
-						//check for castle
-						if (dynamic_cast<King *>(pieces[i][j].get()) && j == 4) {
-							if ((i == 7 || i == 0) && (x == 2 || x == 6) && y == i) {//if castle
-								is_castle = true;
-							}
-						}
-
+						//determine qualities of move and check for validity
 						char capture = ' ';
 						if (checkMove({start, end}, color, true, &capture, &is_check, &is_checkmate, &is_castle)) {
 							if (capture != ' ') {
 								is_capture = true;
 							}	
-							Move m { start, end, std::make_pair(is_capture, capture), is_check, is_checkmate, is_castle , std::make_pair(is_promotion, ' '), is_enPassant};
+							Move m { start, end, std::make_pair(is_capture, capture), is_check, is_checkmate, is_castle , 
+								std::make_pair(is_promotion, ' '), is_enPassant};
 							moves.emplace_back(m);
 						}
 					}
@@ -393,7 +402,6 @@ std::vector<Move> Board::listMoves(int color) {
 			}
 		}
 	}
-
 	return moves;
 }
 
@@ -403,10 +411,13 @@ bool Board::promote(Move m, int color) {
 		int pieces_start_size = static_cast<int>(pieces[m.start.second].size());
 		int pieces_end_size = static_cast<int>(pieces[m.end.second].size());
 		
-		if (m.start.first >= 0 && m.start.second >= 0  && m.start.first < pieces_start_size && m.end.first >= 0 && m.end.second >= 0 && m.end.first < pieces_end_size && pieces[m.start.second][m.start.first]) {//check if piece exists there
-			if (color == 0 && m.end.second == 0 && dynamic_cast<Pawn *>(pieces[m.start.second][m.start.first].get())) {
+		//check for valid coords and if piece exists at coords
+		if (m.start.first >= 0 && m.start.second >= 0  && m.start.first < pieces_start_size && m.end.first >= 0 && m.end.second >= 0 && 
+				m.end.first < pieces_end_size && pieces[m.start.second][m.start.first]) {
+			
+			if (color == 0 && m.end.second == 0 && dynamic_cast<Pawn *>(pieces[m.start.second][m.start.first].get())) {//color matches row
 				return true;
-			} else if (color == 1 && m.end.second == 7 && dynamic_cast<Pawn *>(pieces[m.start.second][m.start.first].get())) {
+			} else if (color == 1 && m.end.second == 7 && dynamic_cast<Pawn *>(pieces[m.start.second][m.start.first].get())) {//color matches row
 				return true;
 			}
 		}
@@ -416,9 +427,11 @@ bool Board::promote(Move m, int color) {
 	
 
 void Board::place(char piece, std::pair<int, int> coord) {
+	//check for valid coords
 	if (coord.first >= 0 && coord.second >= 0 && coord.second < static_cast<int>(pieces.size()) && coord.first < static_cast<int>(pieces[coord.second].size())) {
-		if (pieces[coord.second][coord.first]) {
-			std::cout << "You cannot place a piece there." << std::endl;
+		if (pieces[coord.second][coord.first]) {//if piece exits at coords
+			std::string error = "You cannot place a piece there.";
+			throw(error);
 		} else {
 			if (piece >= 'a' && piece <= 'z') {
 				if (piece == 'p') {
@@ -439,6 +452,9 @@ void Board::place(char piece, std::pair<int, int> coord) {
 				else if (piece == 'k') {
 					pieces[coord.second][coord.first] = std::make_unique<King>(1);
 				}
+
+				//updatemoved
+				pieces[coord.second][coord.first]->setMoved();
 			}
 
 			else if (piece >= 'A' && piece <= 'Z') {
@@ -460,12 +476,17 @@ void Board::place(char piece, std::pair<int, int> coord) {
 				else if (piece == 'K') {
 					pieces[coord.second][coord.first] = std::make_unique<King>(0);
 				}
+
+				//update moved
+				pieces[coord.second][coord.first]->setMoved();
 			}
-			pieces[coord.second][coord.first]->setMoved();
+			
+			//turn enPassant off if the added piece is a pawn
 			if (dynamic_cast<Pawn *>(pieces[coord.second][coord.first].get())) {
 				Pawn *p = dynamic_cast<Pawn *>(pieces[coord.second][coord.first].get());
 				p->setEnPassant(false);
 			}
+
 			board[coord.second][coord.first] = piece;
 		}
 	} else {
@@ -475,6 +496,7 @@ void Board::place(char piece, std::pair<int, int> coord) {
 }
 
 void Board::remove(std::pair<int, int> coord){
+	//check for valid coords
 	if (coord.first >= 0 && coord.second >= 0 && coord.second < static_cast<int>(pieces.size()) && coord.first < static_cast<int>(pieces[coord.second].size())) {
 		pieces[coord.second][coord.first].reset();
 		board[coord.second][coord.first] = ' ';
@@ -491,15 +513,17 @@ bool Board::setupReady() {
 		for (size_t j = 0; j < pieces[i].size(); ++j) {
 			if (dynamic_cast<King *>(pieces[i][j].get())) {
 				++king_count;
-				if (king_count > 2) {
+				if (king_count != 2) {//check for correct number of kings
 					return false;
 				}
+
+				//check for kings of both colors
 				if (pieces[i][j]->getColor() == 0) {
 					white_king = true;
 				} else if (pieces[i][j]->getColor() == 1) {
 					black_king = true;
 				}
-			} else if (dynamic_cast<Pawn *>(pieces[i][j].get())) {
+			} else if (dynamic_cast<Pawn *>(pieces[i][j].get())) {//check for pawn on first and last row
 				if (i == 0 || i == 7) {
 					return false;
 				}

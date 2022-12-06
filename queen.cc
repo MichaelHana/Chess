@@ -6,8 +6,6 @@
 Queen::Queen(int color) : Piece(color) {}
 
 bool Queen::validMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) {
-	// assumed that board checks move is in bounds
-
 	// check move distance
 	if (start == end) {
 		return false;
@@ -16,13 +14,8 @@ bool Queen::validMove(Board* board, std::pair<int, int> start, std::pair<int, in
 			return false;
 		}
 	}
-	// check if blocked by piece before end
-	/*for (int x = start.first, y = start.second; x != end.first || y != end.second; x += (end.first - start.first) / abs(end.first - start.first), y += (end.second - start.second) / abs(end.second - start.second)) {
-		if (board->getPiece(std::make_pair(x, y))) {
-			return false;
-		}
-	}*/
-
+	
+	//check if blocked by piece on the way
 	int x = start.first, y = start.second;
 	while (x != end.first || y != end.second) {
 		int difference_x = end.first - start.first;
@@ -47,6 +40,5 @@ bool Queen::validMove(Board* board, std::pair<int, int> start, std::pair<int, in
 	if (board->getPiece(end) && board->getPiece(end)->getColor() == color) {
 		return false;
 	}
-
 	return true;
 }

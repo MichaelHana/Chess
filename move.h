@@ -10,9 +10,13 @@ struct Move {
 	std::pair<bool, char> capture;
 	bool check;
 	bool checkmate;
-	bool castle; //0 = no castle, 1 = king side castle, 2 = queen side castle
+	bool castle;
 	std::pair<bool, char> promote;
 	bool enPassant;
+
+	bool operator==(Move &other_move) {
+		return other_move.start.first == other_move.end.first && other_move.start.second == other_move.end.second;
+	}
 };
 
 #endif

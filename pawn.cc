@@ -6,9 +6,6 @@
 Pawn::Pawn(int color) : Piece{color}, can_be_enpassant{false} {}
 
 bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int> end) {
-	// assumed that board checks move is in bounds
-	// todo: en passent
-
 	if (color == 0) { // white
 		if (start.first - end.first == 0) { // vertical move: not a capture
 			if (end.second - start.second < -2 || end.second - start.second > -1) { // too far or wrong direction
@@ -28,6 +25,7 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 			}
 		} else if (abs(start.first - end.first) == 1 && end.second - start.second == -1) { // diagonal move: capture
 			if (!board->getPiece(end)) { // no piece to capture
+				//check for enPassant
 				Piece *piece = board->getPiece(std::make_pair(end.first, start.second));
 				if (piece && piece->getColor() != color) {
 					Pawn *p = dynamic_cast<Pawn *>(piece);
@@ -61,6 +59,7 @@ bool Pawn::validMove(Board* board, std::pair<int, int> start, std::pair<int, int
 			}
 		} else if (abs(start.first - end.first) == 1 && end.second - start.second == 1) { // diagonal move: capture
 			if (!board->getPiece(end)) { // no piece to capture
+				//check for enPassant
 				Piece *piece = board->getPiece(std::make_pair(end.first, start.second));
 				if (piece && piece->getColor() != color) {
 					Pawn *p = dynamic_cast<Pawn *>(piece);

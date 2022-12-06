@@ -9,8 +9,8 @@ struct Move;
 class Level4: public Computer {
 	public:
 		Level4(int color);
-		Move getMove(std::vector<Move> moves);
-		char getPromotion();
+		Move getMove(std::vector<Move> moves) override;
+		char getPromotion() override;
 };
 
 #endif

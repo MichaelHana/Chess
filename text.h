@@ -4,9 +4,10 @@
 #include "viewer.h"
 
 class Text: public Viewer {
-  std::ostream &out;
-  public:
-  void update(std::vector<std::vector<char>> board) override;//(char board[rows][cols]) override;
-  Text(std::ostream &out);
+	std::ostream &out;
+	public:
+		Text(int rows, int cols, std::ostream &out);
+		void update(std::vector<std::vector<char>> board) override;
+		std::string convertpiece(char piece);
 };
 #endif
