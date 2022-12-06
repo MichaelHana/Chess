@@ -18,7 +18,7 @@ void Text::update(std::vector<std::vector<char>> board) {
                 out << i << "|";
                 for (int j = 0; j < cols; ++j) {
                         std::string piece = convertpiece(board[i][j]);
-                        if ((i+j)%2 && piece == " ") {
+                        if (!((i+j)%2) && piece == " ") {
                                 out << "\u25A0 |";
                         } else {
                                 out << piece << " |";
