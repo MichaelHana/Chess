@@ -9,7 +9,7 @@ Graphics::Graphics(int rows, int cols): Viewer{rows, cols} {
 		for (int b = 0; b < cols; ++b) {
             		if ((a + b) % 2) {
                		 xw->fillRectangle(b * tileSize, a * tileSize, tileSize, tileSize, Xwindow::Red);
-            		}
+					}
         	}
     	}
 

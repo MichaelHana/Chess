@@ -511,9 +511,6 @@ bool Board::setupReady() {
 		for (size_t j = 0; j < pieces[i].size(); ++j) {
 			if (dynamic_cast<King *>(pieces[i][j].get())) {
 				++king_count;
-				if (king_count != 2) {//check for correct number of kings
-					return false;
-				}
 
 				//check for kings of both colors
 				if (pieces[i][j]->getColor() == 0) {
@@ -528,7 +525,7 @@ bool Board::setupReady() {
 			}
 		}
 	}
-	return white_king && black_king && !check(0) && !check(1);
+	return white_king && black_king && !check(0) && !check(1) && king_count == 2;
 }
 
 
