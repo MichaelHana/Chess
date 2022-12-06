@@ -19,22 +19,24 @@ void Text::update(std::vector<std::vector<char>> board) {
                 for (int j = 0; j < cols; ++j) {
                         std::string piece = convertpiece(board[i][j]);
                         if ((i+j)%2 && piece == " ") {
-                                out << "\u25A0|";
+                                out << "\u25A0 |";
                         } else {
                                 out << piece << " |";
                         }
                 }
                 out << std::endl;
+                out << " ";
                 for (int i = 0; i <= 3 * cols; ++i) {
                         out << "-";
                 }
                 out << std::endl;
         }
-        out << " ";
-        char letter = 'a';
         for (int k=0; k < cols; ++k) {
-                out << letter+k;
+                char letter = 'a'+k;
+                std::string strletter(1,letter);
+                out << "  " << strletter;
         }
+        out << std::endl;
 }
 
 std::string Text::convertpiece(char piece){
