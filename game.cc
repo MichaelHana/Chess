@@ -75,6 +75,10 @@ void Game::play()
 				else
 				{
 					std::cout << "invalid player :" << player << std::endl;
+					for (size_t j = 0; j < players.size(); ++j) {
+						players.pop_back();
+					}
+					game_running = false;
 					break; // break to reset input
 				}
 			}
