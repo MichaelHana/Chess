@@ -91,7 +91,7 @@ void Graphics::update(std::vector<std::vector<char>> board) {//(char board[rows]
 		if (changed_tile == 2 && end_x >= 0 && end_y >= 0) {
 			std::string s2(1, curboard[end_y][end_x]);
 			xw->fillRectangle(end_x * tileSize, end_y * tileSize, tileSize, tileSize, Xwindow::Blue);
-			xw->drawString(start_x * tileSize + tileSize/2 - 2, start_y * tileSize + tileSize/2 + 5, s2);
+			xw->drawString(end_x * tileSize + tileSize/2 - 2, end_y * tileSize + tileSize/2 + 5, s2);
 		}
 	}
 }
