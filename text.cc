@@ -6,6 +6,7 @@ Text::Text(int rows, int cols, std::ostream &out): Viewer{rows, cols}, out(out) 
 void Text::update(std::vector<std::vector<char>> board) {
 
 	//board top
+        out << " ";
         for (int i=0; i <= 3 * cols; ++i) {
                 out << "-";
         }
@@ -14,11 +15,11 @@ void Text::update(std::vector<std::vector<char>> board) {
         
 	//print board
 	for (int i = 0; i < rows; ++i) {
-                out << "|";
+                out << i << "|";
                 for (int j = 0; j < cols; ++j) {
                         std::string piece = convertpiece(board[i][j]);
                         if ((i+j)%2 && piece == " ") {
-                                out << "__|";
+                                out << "\u25A0|";
                         } else {
                                 out << piece << " |";
                         }
@@ -28,6 +29,11 @@ void Text::update(std::vector<std::vector<char>> board) {
                         out << "-";
                 }
                 out << std::endl;
+        }
+        out << " ";
+        char letter = 'a';
+        for (int k=0; k < cols; ++k) {
+                out << letter+k;
         }
 }
 
