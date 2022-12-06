@@ -9,7 +9,7 @@ char Computer::getPromotion() {
 
 	int random = rand() % 4;
 
-	if (this->getColor() == 0) {//white
+	if (color == 0) {//white
 		if (random == 0) {
 			return 'Q';
 		} else if (random == 1) {
@@ -19,7 +19,7 @@ char Computer::getPromotion() {
 		} else {
 			return 'R';
 		}
-	} else if (this->getColor() == 1) {
+	} else if (color == 1) {
 		if (random == 0) {
 			return 'q';
 		} else if (random == 1) {

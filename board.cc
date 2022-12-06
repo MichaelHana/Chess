@@ -182,8 +182,8 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 					pieces[m.start.second][m.start.first] = std::move(pieces[m.end.second][m.end.first]);
 					pieces[m.end.second][m.end.first] = std::move(captured_piece);
 					return false;
-				} else if (promotion) {
-					*promotion = true;
+				} else 	if (promotion) {
+						*promotion = true;
 				}
 			}
 			
@@ -241,6 +241,11 @@ bool Board::checkMove(Move m, int color, bool onlyTesting, char *capture, bool *
 				if (castle) {
 					board[m.end.second][rook_destination] = board[m.end.second][rook_index];
 					board[m.start.second][rook_index] = ' ';
+				}
+
+				//change piece if promotion
+				if (m.promote.first && valid_promotion) {
+					board[m.end.second][m.end.first] = m.promote.second;
 				}
 
 				// if the move enables an enpassant, then enable it for the pawn

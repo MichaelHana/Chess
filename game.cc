@@ -114,6 +114,8 @@ void Game::play()
 				players.pop_back();
 			}
 
+			move_history.clear();
+
 		}
 		else if (command == "move")
 		{
@@ -365,6 +367,8 @@ void Game::checkEnd() {
 		for (int i = 0; i < numplayers; ++i) {
 			players.pop_back();
 		}
+
+		move_history.clear();
 	}
 	// do we need to account for insufficient material end case?????????
 	// do we need to add in 50-move rule or agreement or repetition?????
