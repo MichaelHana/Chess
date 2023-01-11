@@ -22,4 +22,4 @@ Download and open the `Code` folder on a Unix system. Then run `make` to compile
 - Leverages design patterns such as MVC and the observer pattern to modularize components
 - Utilizes smart pointers to avoid manual memory management and memory leaks
 
-A full UML diagram of the program can be found [here](https://gitfront.io/r/smchase/UcFs77HwCqwF/Chess/blob/uml.pdf).
+A full UML diagram of the program can be found [here](https://gitfront.io/r/smchase/UcFs77HwCqwF/Chess/raw/uml.pdf).
