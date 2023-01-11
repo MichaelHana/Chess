@@ -1,7 +1,0 @@
-game human human
-move e2 e4
-move a7 a6
-move d1 f3
-move a6 a5
-move f3 f7
-move a5 a4
